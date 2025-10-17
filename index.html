@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- UPDATED TITLE -->
+    <title>Fight Me</title>
+    
+    <!-- Load Atkinson Hyperlegible Next from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Tailwind Configuration: Set Atkinson Hyperlegible Next as the default sans font -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        // Using the new font globally
+                        sans: ['"Atkinson Hyperlegible Next"', 'sans-serif'],
+                    },
+                },
+            }
+        }
+    </script>
+    
+    <!-- Load Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Load Tone.js for sound generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
+
+    <style>
+        :root {
+            --background-color: #0c1a2c; /* Dark Blue/Slate */
+            --surface-color: #1a2a3c;   /* Slightly lighter surface */
+            --accent-color: #f59e0b;      /* Amber */
+            --text-color: #ffffffde;
+            --work-color: #f59e0b;      
+            --rest-color: #10b981;      
+            --warn-color: #fcd34d;      
+        }
+        body {
+            /* Now using Atkinson Hyperlegible Next via the Tailwind font-sans class */
+            font-family: 'Atkinson Hyperlegible Next', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+        #timer-display {
+            /* Ensures responsive scaling on mobile */
+            font-size: clamp(3.5rem, 18vw, 9rem); 
+            line-height: 1;
+            font-weight: 900;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.2); 
+            transition: text-shadow 0.5s ease, color 0.5s ease;
+            text-align: center;
+            letter-spacing: -0.05em;
+        }
+        /* Custom scrollbar for better look */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--surface-color); }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+        /* Style the select dropdown */
+        select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 1.25rem 1.25rem;
+        }
+        
+        /* Volume Slider Customization */
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            background: var(--accent-color);
+            cursor: pointer;
+            border-radius: 50%;
+            margin-top: -5px; 
+            box-shadow: 0 0 5px rgba(245, 158, 11, 0.6);
+            transition: background 0.2s;
+        }
+        input[type=range]::-moz-range-thumb {
+            width: 14px;
+            height: 14px;
+            background: var(--accent-color);
+            cursor: pointer;
+            border-radius: 50%;
+            border: none;
+            box-shadow: 0 0 5px rgba(245, 158, 11, 0.6);
+            transition: background 0.2s;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            height: 4px;
+            background: #475569;
+            border-radius: 2px;
+        }
+        input[type=range]::-moz-range-track {
+            height: 4px;
+            background: #475569;
+            border-radius: 2px;
+        }
+
+        /* Confetti Container Styling */
+        #confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 60;
+        }
+
+        /* Basic Confetti Particle Style (CSS only for simplicity) */
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: var(--accent-color);
+            opacity: 0;
+            animation: pop 2.5s ease-out forwards;
+        }
+
+        @keyframes pop {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0.5; }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 font-sans">
+
+    <!-- Confetti Container -->
+    <div id="confetti-container"></div>
+    
+    <!-- Main Application Container -->
+    <div id="app" class="w-full max-w-sm sm:max-w-2xl bg-[--surface-color] shadow-2xl rounded-2xl p-6 sm:p-8 space-y-6 border border-slate-700">
+        
+        <!-- Header with Fullscreen Button -->
+        <header class="text-center flex justify-between items-center">
+            <div class="w-1/5"></div> <!-- Spacer -->
+            <div class="flex-grow">
+                <!-- UPDATED H1 TEXT -->
+                <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-wide">Fight Me</h1>
+                <!-- UPDATED SECONDARY HEADING -->
+                <p id="workout-name" class="text-lg sm:text-xl text-slate-400 mt-1">A boxing training app</p>
+            </div>
+            <div class="w-1/5 flex justify-end">
+                <button id="fullscreen-btn" onclick="toggleFullscreen()" title="Toggle Fullscreen"
+                    class="p-2.5 bg-slate-700 hover:bg-slate-600 rounded-full text-white transition duration-150 active:scale-95">
+                    <i data-lucide="maximize" class="w-6 h-6" id="fullscreen-icon"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Dynamic Combination Callout Display -->
+        <div id="combo-callout" class="text-center text-2xl sm:text-3xl text-amber-500 font-extrabold min-h-[50px] p-3 bg-slate-700/50 rounded-lg shadow-inner flex items-center justify-center">
+            <span class="text-slate-400 text-base">Press Start to begin training!</span>
+        </div>
+
+        <!-- Timer Display (Dual Time) -->
+        <div class="text-center py-2 space-y-2">
+            <div id="total-time-display" class="text-lg text-slate-400 font-semibold tabular-nums">
+                Total Remaining: 00:00
+            </div>
+            <div id="timer-display" class="font-extrabold text-white tracking-tighter tabular-nums transition-colors duration-500">
+                03:00
+            </div>
+        </div>
+
+        <!-- Configuration Tabs -->
+        <div class="space-y-6 max-h-[60vh] overflow-y-auto">
+            <div id="config-card" class="bg-slate-700 rounded-xl p-4 sm:p-6 space-y-6 shadow-xl opacity-100 transition-opacity duration-300">
+                
+                <!-- 1. Round Timing & Structure -->
+                <div class="space-y-3 border-b border-slate-600 pb-4">
+                    <h3 class="text-xl font-bold text-amber-400">Timer Settings</h3>
+                    <div class="grid grid-cols-3 gap-3 sm:gap-4">
+                        <div class="space-y-1">
+                            <label for="round-duration" class="text-xs font-semibold text-slate-300 block">Round Mins</label>
+                            <input type="number" id="round-duration" value="3" min="1" oninput="updateConfig()"
+                                class="w-full bg-slate-800 text-white p-2 rounded-lg border-2 border-slate-600 focus:border-amber-500 transition duration-150 text-center">
+                        </div>
+                        <div class="space-y-1">
+                            <label for="rest-duration" class="text-xs font-semibold text-slate-300 block">Rest Mins</label>
+                            <input type="number" id="rest-duration" value="1" min="0" oninput="updateConfig()"
+                                class="w-full bg-slate-800 text-white p-2 rounded-lg border-2 border-slate-600 focus:border-amber-500 transition duration-150 text-center">
+                        </div>
+                        <div class="space-y-1">
+                            <label for="num-rounds" class="text-xs font-semibold text-slate-300 block">Total Rounds</label>
+                            <input type="number" id="num-rounds" value="5" min="1" oninput="updateConfig()"
+                                class="w-full bg-slate-800 text-white p-2 rounded-lg border-2 border-slate-600 focus:border-amber-500 transition duration-150 text-center">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Core Combo Generation Controls (Sliders/Dropdowns) -->
+                <div class="space-y-4">
+                    <h3 class="text-xl font-bold text-amber-400">Combo Logic Settings</h3>
+
+                    <!-- Combo Length Slider -->
+                    <div class="space-y-2">
+                        <label for="combo-length" class="text-sm font-semibold text-slate-300 block">1. Combo Length <span id="length-label" class="text-amber-300 ml-2 text-xs font-normal">Medium (1-4 Punches)</span></label>
+                        <input type="range" id="combo-length-slider" min="0" max="2" value="1" step="1" oninput="updateConfig()"
+                            class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer range-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        <div class="flex justify-between text-xs text-slate-400 pt-1">
+                            <span>Low</span><span>Medium</span><span>High</span>
+                        </div>
+                    </div>
+
+                    <!-- Combo Difficulty Slider (Consecutive Same-Side) -->
+                    <div class="space-y-2">
+                        <label for="combo-difficulty" class="text-sm font-semibold text-slate-300 block">2. Combo Difficulty <span id="difficulty-label" class="text-amber-300 ml-2 text-xs font-normal">Medium (Some Same-Side)</span></label>
+                        <input type="range" id="combo-difficulty-slider" min="0" max="2" value="1" step="1" oninput="updateConfig()"
+                            class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer range-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        <div class="flex justify-between text-xs text-slate-400 pt-1">
+                            <span>Low</span><span>Medium</span><span>High</span>
+                        </div>
+                    </div>
+
+                    <!-- Move Complexity Slider (Frequency of Non-Punches) -->
+                    <div class="space-y-2">
+                        <label for="move-complexity" class="text-sm font-semibold text-slate-300 block">3. Move Complexity <span id="complexity-label" class="text-amber-300 ml-2 text-xs font-normal">Medium (Occasional Non-Punches)</span></label>
+                        <input type="range" id="move-complexity-slider" min="0" max="2" value="1" step="1" oninput="updateConfig()"
+                            class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer range-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        <div class="flex justify-between text-xs text-slate-400 pt-1">
+                            <span>Low</span><span>Medium</span><span>High</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Punch Complexity Dropdown (Punch Variety) -->
+                    <div class="space-y-1">
+                        <label for="punch-complexity" class="text-sm font-semibold text-slate-300 block">4. Punch Variety</label>
+                        <select id="punch-complexity" onchange="updateConfig()"
+                                class="w-full bg-slate-800 text-white p-3 rounded-lg border-2 border-slate-600 focus:border-amber-500 transition duration-150 pr-10 appearance-none">
+                            <option value="Standard">Standard Punches (1-6) Only</option>
+                            <option value="Body" selected>Include Body Shots (1b-6b)</option>
+                            <option value="Rare">Body Shots & Rare Punches (Overhand, Elbows)</option>
+                        </select>
+                    </div>
+
+                    <!-- Moves Included Dropdown (Move Type) -->
+                    <div class="space-y-1">
+                        <label for="moves-included" class="text-sm font-semibold text-slate-300 block">5. Moves Included</label>
+                        <select id="moves-included" onchange="updateConfig()"
+                                class="w-full bg-slate-800 text-white p-3 rounded-lg border-2 border-slate-600 focus:border-amber-500 transition duration-150 pr-10 appearance-none">
+                            <option value="PunchesOnly">Punches Only</option>
+                            <option value="PunchesAndDefense">Punches & Defensive Moves</option>
+                            <option value="All" selected>Punches, Defense, & Footwork</option>
+                        </select>
+                    </div>
+
+                    <!-- Combo Intensity Dropdown -->
+                    <div class="space-y-1">
+                        <label for="combo-intensity" class="text-sm font-semibold text-slate-300 block">6. Combo Intensity</label>
+                        <select id="combo-intensity" onchange="updateConfig()"
+                                class="w-full bg-slate-800 text-white p-3 rounded-lg border-2 border-slate-600 focus:border-amber-500 transition duration-150 pr-10 appearance-none">
+                            <option value="Low">Low (Slower Pace - 4s)</option>
+                            <option value="Medium" selected>Medium (Standard Pace - 2.5s)</option>
+                            <option value="High">High (Fast Pace - 1.5s)</option>
+                        </select>
+                    </div>
+
+                    <!-- Training Mode Dropdown -->
+                    <div class="space-y-1">
+                        <label for="training-mode" class="text-sm font-semibold text-slate-300 block">7. Training Mode</label>
+                        <select id="training-mode" onchange="updateConfig()"
+                                class="w-full bg-slate-800 text-white p-3 rounded-lg border-2 border-slate-600 focus:border-amber-500 transition duration-150 pr-10 appearance-none">
+                            <option value="Shadowboxing" selected>Shadowboxing (Flow & Movement)</option>
+                            <option value="HeavyBag">Heavy Bag (Power & Fixed Target)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 3. Voice and Sound Controls -->
+                <div class="flex space-x-4 pt-4 border-t border-slate-600">
+                    <div class="space-y-1 w-2/3">
+                        <label for="voice-select" class="text-sm font-semibold text-slate-300 block">Voice Announcer</label>
+                        <select id="voice-select" onchange="handleVoiceChange(event)"
+                                class="w-full bg-slate-800 text-white p-3 rounded-lg border-2 border-slate-600 focus:border-amber-500 transition duration-150 pr-10 appearance-none">
+                            <option value="Kore" selected>Kore (Firm)</option>
+                            <option value="Puck">Puck (Upbeat)</option>
+                            <option value="Charon">Charon (Informative)</option>
+                            <option option value="Zephyr">Zephyr (Bright)</option>
+                        </select>
+                    </div>
+
+                    <!-- Volume Control -->
+                    <div class="space-y-1 w-1/3">
+                        <label class="text-sm font-semibold text-slate-300 block">Volume</label>
+                        <div class="flex items-center space-x-2">
+                            <button id="mute-btn" onclick="toggleMute()" 
+                                class="flex-shrink-0 p-2 bg-slate-800 hover:bg-slate-600 text-white rounded-lg border-2 border-slate-600 transition duration-150">
+                                <i data-lucide="volume-2" class="w-5 h-5" id="mute-icon"></i>
+                            </button>
+                            <input type="range" id="voice-volume-slider" min="0" max="100" value="75" oninput="updateVoiceVolume()"
+                                class="w-full h-2 bg-slate-800 rounded-lg cursor-pointer">
+                            <span id="voice-volume-db" class="text-xs text-amber-400 w-10 text-right font-mono">0.0 dB</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Configuration Card -->
+
+        <!-- Preview Button -->
+        <button id="preview-btn" onclick="showPreviewModal()"
+                class="w-full bg-slate-600 hover:bg-slate-500 active:bg-slate-700 text-white font-semibold py-3 px-6 rounded-xl text-lg transition duration-150 ease-in-out shadow-md shadow-slate-800/50 flex items-center justify-center space-x-2 active:scale-[0.99]">
+            <i data-lucide="eye" class="w-5 h-5"></i> Preview Combos
+        </button>
+
+        <!-- Controls Section -->
+        <div id="controls" class="flex flex-col gap-4 justify-center">
+            <button id="start-pause-btn" onclick="handleStartPause()"
+                    class="w-full text-slate-900 font-extrabold py-5 px-8 rounded-xl text-xl sm:text-2xl uppercase tracking-widest flex items-center justify-center space-x-3 transition duration-200 ease-in-out shadow-2xl bg-amber-500 hover:bg-amber-600 active:bg-amber-700 shadow-amber-500/50 active:scale-[0.99]">
+                <span id="start-pause-icon"><i data-lucide="play" class="w-8 h-8"></i></span>
+                <span id="start-pause-label">Start Training</span>
+            </button>
+
+            <button id="stop-btn" onclick="showModal()"
+                    class="hidden w-full bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-semibold py-3 px-6 rounded-xl text-lg transition duration-150 ease-in-out shadow-md shadow-red-800/50 active:scale-[0.99]">
+                <i data-lucide="square" class="w-5 h-5 inline-block mr-2"></i> Stop & Reset
+            </button>
+        </div>
+
+    </div>
+
+    <!-- Confirmation Modal (Stop) -->
+    <div id="confirmation-modal" class="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-slate-800 rounded-lg p-6 w-full max-w-xs sm:max-w-sm shadow-2xl border border-slate-700 transform transition duration-300 scale-100">
+            <h2 class="text-xl font-bold mb-2 text-white">Stop Training?</h2>
+            <p class="text-slate-400 mb-6 text-sm">Are you sure you want to stop? Your current progress will be lost.</p>
+            <div class="flex justify-end space-x-3">
+                <button onclick="hideModal('confirmation-modal')" class="px-3 py-2 text-sm font-medium rounded-lg text-amber-400 hover:bg-slate-700 transition uppercase">Cancel</button>
+                <button onclick="confirmStop()" class="px-4 py-2 text-sm font-bold rounded-lg text-white bg-red-600 hover:bg-red-700 transition uppercase shadow-md">Stop & Reset</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Combo Preview Modal -->
+    <div id="combo-preview-modal" class="fixed inset-0 bg-black bg-opacity-80 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-slate-800 rounded-xl p-6 w-full max-w-lg shadow-2xl border border-slate-700 transform transition duration-300">
+            <h2 class="text-2xl font-extrabold mb-2 text-white flex items-center space-x-2">
+                <i data-lucide="clipboard-list" class="w-6 h-6 text-amber-400"></i>
+                <span>Workout Preview</span>
+            </h2>
+            <div id="preview-metadata" class="mb-4 text-sm font-semibold border-b border-slate-700 pb-3">
+                <!-- Metadata will be injected here -->
+            </div>
+            <div id="preview-content" class="max-h-96 overflow-y-auto space-y-4">
+                <!-- Combos will be injected here -->
+            </div>
+            <div class="flex justify-end mt-6">
+                <button onclick="hideModal('combo-preview-modal')" class="px-4 py-2 text-sm font-bold rounded-lg text-white bg-amber-500 hover:bg-amber-600 transition uppercase shadow-md">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Logic -->
+    <script>
+        // --- Move Definitions (unchanged) ---
+        const MOVES = {
+            // Standard Punches
+            '1': { text: '1', side: 'L', group: 'Punch', body: false, head: true, common: 10 }, 
+            '2': { text: '2', side: 'R', group: 'Punch', body: false, head: true, common: 10 },
+            '3': { text: '3', side: 'L', group: 'Punch', body: false, head: true, common: 8 },
+            '4': { text: '4', side: 'R', group: 'Punch', body: false, head: true, common: 8 },
+            '5': { text: '5', side: 'L', group: 'Punch', body: false, head: true, common: 7 },
+            '6': { text: '6', side: 'R', group: 'Punch', body: false, head: true, common: 7 },
+            // Body Punches
+            '1b': { text: '1 body', side: 'L', group: 'Punch', body: true, head: false, common: 5 },
+            '2b': { text: '2 body', side: 'R', group: 'Punch', body: true, head: false, common: 5 },
+            '3b': { text: '3 body', side: 'L', group: 'Punch', body: true, head: false, common: 4 },
+            '4b': { text: '4 body', side: 'R', group: 'Punch', body: true, head: false, common: 4 },
+            '5b': { text: '5 body', side: 'L', group: 'Punch', body: true, head: false, common: 3 },
+            '6b': { text: '6 body', side: 'R', group: 'Punch', body: true, head: false, common: 3 },
+            // Rare Punches
+            'O': { text: 'Overhand', side: 'R', group: 'Punch', body: false, head: true, common: 2 },
+            'E': { text: 'Elbow', side: 'R', group: 'Punch', body: false, head: true, common: 1 },
+            // Defense
+            'S': { text: 'Slip', side: 'D', group: 'Defense', common: 5 },
+            'R': { text: 'Roll', side: 'D', group: 'Defense', common: 4 },
+            'P': { text: 'Parry', side: 'D', group: 'Defense', common: 3 },
+            'B': { text: 'Block', side: 'D', group: 'Defense', common: 3 },
+            // Footwork
+            'A': { text: 'Angle', side: 'F', group: 'Footwork', common: 4 },
+            'F': { text: 'Feint', side: 'F', group: 'Footwork', common: 3 },
+            'L': { text: 'L Step', side: 'F', group: 'Footwork', common: 2 },
+        };
+
+        // --- Global State ---
+        let state = {
+            isRunning: false,
+            isPaused: false,
+            isResting: false,
+            currentRound: 0,
+            totalSeconds: 0,
+            intervalId: null,
+            timerId: null,
+            lastMoveSide: null,
+            comboGenerationInterval: 0, // Time in MS between combo calls
+            voiceName: 'Kore',
+        };
+
+        // --- Global Audio State ---
+        let audioContextStarted = false;
+        let voiceGainNode = null; 
+        let isMuted = false;
+        const DEFAULT_VOICE_VOLUME = 75;
+        let currentAudioSource = null; 
+        
+        // --- Wake Lock State ---
+        let wakeLock = null;
+
+        // --- Wake Lock Functions ---
+
+        /**
+         * Requests a screen wake lock to prevent the device from sleeping.
+         */
+        const requestWakeLock = async () => {
+            if ('wakeLock' in navigator) {
+                try {
+                    wakeLock = await navigator.wakeLock.request('screen');
+                    console.log('Screen Wake Lock acquired.');
+                } catch (err) {
+                    // This often happens if the user leaves the app or permission is denied
+                    console.error('Wake Lock request failed:', err.name, err.message);
+                }
+            }
+        };
+
+        /**
+         * Releases the acquired screen wake lock.
+         */
+        const releaseWakeLock = () => {
+            if (wakeLock) {
+                wakeLock.release()
+                    .then(() => {
+                        wakeLock = null;
+                        console.log('Screen Wake Lock released.');
+                    })
+                    .catch(err => console.error('Wake Lock release failed:', err));
+            }
+        };
+
+        // Re-acquire lock if user returns to the tab while training is running
+        document.addEventListener('visibilitychange', () => {
+            if (state.isRunning && document.visibilityState === 'visible') {
+                requestWakeLock();
+            }
+        });
+
+
+        // --- Fullscreen Functions ---
+
+        function toggleFullscreen() {
+            const iconElement = document.getElementById('fullscreen-icon');
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.error(`Error attempting to enable full-screen mode: ${err.message}`);
+                });
+                iconElement.dataset.lucide = 'minimize';
+            } else {
+                document.exitFullscreen();
+                iconElement.dataset.lucide = 'maximize';
+            }
+            lucide.createIcons();
+        }
+
+
+        // --- Core Audio Functions (unchanged for brevity) ---
+
+        async function initAudio() {
+            if (audioContextStarted) return;
+            try {
+                if (typeof Tone !== 'undefined') {
+                    await Tone.start();
+                    const initialGain = document.getElementById('voice-volume-slider').value / 100;
+                    voiceGainNode = new Tone.Gain(initialGain).toDestination();
+                    audioContextStarted = true;
+                    console.log('Audio Context Initialized and Voice Gain Node Created.');
+                }
+            } catch (error) {
+                console.error("Error initializing Tone.js:", error);
+            }
+        }
+
+        function gainToDb(gain) {
+            if (gain === 0) return '-∞';
+            const db = 20 * Math.log10(gain);
+            return db.toFixed(1);
+        }
+
+        function updateVoiceVolume() {
+            const slider = document.getElementById('voice-volume-slider');
+            const dbDisplay = document.getElementById('voice-volume-db');
+            const volumeValue = parseInt(slider.value, 10);
+            const gain = volumeValue / 100;
+
+            if (voiceGainNode) {
+                voiceGainNode.gain.value = gain;
+            }
+
+            const db = gainToDb(gain);
+            dbDisplay.textContent = `${db} dB`;
+            
+            const iconElement = document.getElementById('mute-icon');
+            if (volumeValue > 0) {
+                isMuted = false;
+                iconElement.dataset.lucide = 'volume-2';
+            } else {
+                isMuted = true;
+                iconElement.dataset.lucide = 'volume-x';
+            }
+            lucide.createIcons();
+        }
+
+        function toggleMute() {
+            const slider = document.getElementById('voice-volume-slider');
+            const currentlyMuted = parseInt(slider.value, 10) === 0;
+
+            if (currentlyMuted) {
+                const lastVolume = parseInt(slider.dataset.lastVolume || DEFAULT_VOICE_VOLUME, 10);
+                slider.value = lastVolume > 0 ? lastVolume : DEFAULT_VOICE_VOLUME;
+            } else {
+                slider.dataset.lastVolume = slider.value; 
+                slider.value = 0;
+            }
+            
+            updateVoiceVolume();
+        }
+
+        function base64ToWavBlob(base64String, sampleRate) {
+            const byteCharacters = atob(base64String);
+            const byteNumbers = new Array(byteCharacters.length);
+            for (let i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+            const pcm16 = new Int16Array(byteNumbers.buffer);
+            
+            const buffer = new ArrayBuffer(44 + pcm16.length * 2);
+            const view = new DataView(buffer);
+            let offset = 0;
+
+            writeString(view, offset, 'RIFF'); offset += 4;
+            view.setUint32(offset, 36 + pcm16.length * 2, true); offset += 4; 
+            writeString(view, offset, 'WAVE'); offset += 4;
+
+            writeString(view, offset, 'fmt '); offset += 4;
+            view.setUint32(offset, 16, true); offset += 4;
+            view.setUint16(offset, 1, true); offset += 2;  
+            view.setUint16(offset, 1, true); offset += 2;  
+            view.setUint32(offset, sampleRate, true); offset += 4; 
+            view.setUint32(offset, sampleRate * 2, true); offset += 4; 
+            view.setUint16(offset, 2, true); offset += 2;  
+            view.setUint16(offset, 16, true); offset += 2; 
+
+            writeString(view, offset, 'data'); offset += 4;
+            view.setUint32(offset, pcm16.length * 2, true); offset += 4;
+
+            for (let i = 0; i < pcm16.length; i++) {
+                view.setInt16(offset, pcm16[i], true); offset += 2;
+            }
+
+            return new Blob([view], { type: 'audio/wav' });
+        }
+
+        function writeString(view, offset, string) {
+            for (let i = 0; i < string.length; i++) {
+                view.setUint8(offset + i, string.charCodeAt(i));
+            }
+        }
+
+        async function speakText(text, voiceName) {
+            if (isMuted) return;
+            if (!audioContextStarted) {
+                await initAudio();
+            }
+
+            if (currentAudioSource) {
+                try {
+                    currentAudioSource.stop();
+                } catch (e) {
+                }
+                currentAudioSource = null;
+            }
+
+            const apiKey = ""; 
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
+
+            const payload = {
+                contents: [{
+                    parts: [{ text: text }]
+                }],
+                generationConfig: {
+                    responseModalities: ["AUDIO"],
+                    speechConfig: {
+                        voiceConfig: {
+                            prebuiltVoiceConfig: { voiceName: voiceName }
+                        }
+                    }
+                },
+                model: "gemini-2.5-flash-preview-tts"
+            };
+
+            let retries = 0;
+            const MAX_RETRIES = 5;
+
+            while (retries < MAX_RETRIES) {
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (response.ok) {
+                        const audioPart = result?.candidates?.[0]?.content?.parts?.find(p => 
+                            p.inlineData && p.inlineData.mimeType.startsWith("audio/L16")
+                        );
+
+                        if (audioPart) {
+                            const audioData = audioPart.inlineData.data;
+                            const mimeType = audioPart.inlineData.mimeType;
+                            
+                            const rateMatch = mimeType.match(/rate=(\d+)/);
+                            if (rateMatch && rateMatch[1]) {
+                                const sampleRate = parseInt(rateMatch[1], 10);
+                                const wavBlob = base64ToWavBlob(audioData, sampleRate);
+                                
+                                const reader = new FileReader();
+                                reader.onload = async (e) => {
+                                    const audioContext = Tone.getContext().rawContext;
+                                    const arrayBuffer = e.target.result;
+                                    const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+
+                                    const source = audioContext.createBufferSource();
+                                    source.buffer = audioBuffer;
+                                    
+                                    currentAudioSource = source; 
+                                    
+                                    source.connect(voiceGainNode.context.rawContext.createGain()); 
+                                    source.connect(voiceGainNode);
+                                    
+                                    source.start(0);
+                                    
+                                    source.onended = () => {
+                                        source.disconnect();
+                                        if (currentAudioSource === source) {
+                                            currentAudioSource = null;
+                                        }
+                                    };
+                                };
+                                reader.readAsArrayBuffer(wavBlob);
+                                return;
+                            }
+                        }
+                        
+                        console.error("[TTS_ERROR] Invalid TTS response structure or missing audio data.");
+                        throw new Error("Invalid TTS response structure or missing audio data.");
+
+                    } else {
+                        const errorMsg = result.error ? result.error.message : response.statusText;
+                        throw new Error(`TTS API call failed with status ${response.status}: ${errorMsg}`);
+                    }
+
+                } catch (error) {
+                    console.error(`[CONSOLE_ERROR] TTS API call failed (Attempt ${retries + 1}): ${error.message}`);
+                    retries++;
+                    if (retries < MAX_RETRIES) {
+                        const delay = Math.pow(2, retries) * 1000;
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                    } else {
+                        console.error(`[CONSOLE_ERROR] Max retries reached. TTS failed for text: "${text}"`);
+                        break;
+                    }
+                }
+            }
+        }
+        
+        // --- Game Logic Functions (Minified for brevity, core functionality unchanged) ---
+
+        function updateConfig() {
+            const intensity = document.getElementById('combo-intensity').value;
+            switch (intensity) {
+                case 'Low': state.comboGenerationInterval = 4000; break;
+                case 'Medium': state.comboGenerationInterval = 2500; break;
+                case 'High': state.comboGenerationInterval = 1500; break;
+            }
+
+            const lengthSlider = document.getElementById('combo-length-slider').value;
+            const difficultySlider = document.getElementById('combo-difficulty-slider').value;
+            const complexitySlider = document.getElementById('move-complexity-slider').value;
+            
+            document.getElementById('length-label').textContent = ['Low (1-3 Punches)', 'Medium (1-4 Punches)', 'High (2-6 Punches)'][lengthSlider];
+            document.getElementById('difficulty-label').textContent = ['Low (Alternating Sides)', 'Medium (Some Same-Side)', 'High (Frequent Same-Side)'][difficultySlider];
+            document.getElementById('complexity-label').textContent = ['Low (Punches Only)', 'Medium (Occasional Non-Punches)', 'High (Frequent Non-Punches)'][complexitySlider];
+            
+            updateTotalTimeDisplay();
+        }
+
+        function updateTotalTimeDisplay() {
+            const roundMins = parseInt(document.getElementById('round-duration').value);
+            const restMins = parseInt(document.getElementById('rest-duration').value);
+            const numRounds = parseInt(document.getElementById('num-rounds').value);
+            
+            const totalTimeInSeconds = (roundMins + restMins) * numRounds * 60 - (restMins * 60); 
+            const minutes = Math.floor(totalTimeInSeconds / 60);
+            const seconds = totalTimeInSeconds % 60;
+            
+            document.getElementById('total-time-display').textContent = `Total Remaining: ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+        
+        function formatTime(seconds) {
+            const m = Math.floor(seconds / 60);
+            const s = seconds % 60;
+            return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+        }
+
+        function updateTimerDisplay(seconds) {
+            const display = document.getElementById('timer-display');
+            display.textContent = formatTime(seconds);
+
+            let displayColor = 'white';
+            const callout = document.getElementById('combo-callout');
+            
+            if (state.isResting) {
+                displayColor = 'var(--rest-color)';
+                callout.className = 'text-center text-3xl text-green-400 font-extrabold p-3 bg-slate-700/50 rounded-lg shadow-inner flex items-center justify-center';
+            } else if (state.isRunning) {
+                displayColor = 'var(--work-color)';
+                callout.className = 'text-center text-3xl text-amber-500 font-extrabold p-3 bg-slate-700/50 rounded-lg shadow-inner flex items-center justify-center';
+            }
+
+            if (seconds <= 10) {
+                displayColor = 'var(--warn-color)'; 
+            }
+            display.style.color = displayColor;
+        }
+
+        function createConfetti() {
+            const container = document.getElementById('confetti-container');
+            for (let i = 0; i < 50; i++) {
+                const piece = document.createElement('div');
+                piece.className = 'confetti-piece';
+                piece.style.left = Math.random() * 100 + 'vw';
+                piece.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                piece.style.animationDelay = Math.random() * 0.5 + 's';
+                piece.style.animationDuration = Math.random() * 2.5 + 2.5 + 's';
+                container.appendChild(piece);
+            }
+            setTimeout(() => {
+                container.innerHTML = ''; 
+            }, 5000);
+        }
+
+        function startTimer() {
+            const roundMins = parseInt(document.getElementById('round-duration').value);
+            const restMins = parseInt(document.getElementById('rest-duration').value);
+            const numRounds = parseInt(document.getElementById('num-rounds').value);
+
+            let roundSeconds = roundMins * 60;
+            let restSeconds = restMins * 60;
+            state.totalSeconds = state.isResting ? restSeconds : roundSeconds;
+
+            if (state.currentRound === 0) {
+                state.currentRound = 1;
+                speakText(`Round ${state.currentRound} starts now!`, state.voiceName);
+                state.isResting = false;
+                state.totalSeconds = roundSeconds;
+            } else if (state.isResting) {
+                speakText(`Round ${state.currentRound} begins!`, state.voiceName);
+                state.isResting = false;
+                state.totalSeconds = roundSeconds;
+            }
+
+            updateTimerDisplay(state.totalSeconds);
+            document.getElementById('workout-name').textContent = state.isResting ? `Rest - Round ${state.currentRound} of ${numRounds}` : `Round ${state.currentRound} of ${numRounds}`;
+
+            clearInterval(state.timerId); 
+            clearInterval(state.intervalId);
+            
+            // --- NEW: Acquire Wake Lock ---
+            requestWakeLock();
+
+            state.timerId = setInterval(() => {
+                state.totalSeconds--;
+
+                if (state.totalSeconds < 0) {
+                    if (state.isResting) {
+                        state.currentRound++;
+                        if (state.currentRound > numRounds) {
+                            stopTimer();
+                            speakText("Workout complete! Great job!", state.voiceName);
+                            document.getElementById('workout-name').textContent = "Workout Complete!";
+                            document.getElementById('combo-callout').innerHTML = '<i data-lucide="check-circle" class="w-8 h-8 mr-2"></i> WORKOUT COMPLETE!';
+                            createConfetti();
+                            lucide.createIcons();
+                            return;
+                        }
+                        state.totalSeconds = roundSeconds;
+                        state.isResting = false;
+                        speakText(`Round ${state.currentRound} begins now!`, state.voiceName);
+                        startComboGeneration();
+                    } else {
+                        if (restSeconds > 0 && state.currentRound < numRounds) {
+                            state.totalSeconds = restSeconds;
+                            state.isResting = true;
+                            speakText("Rest! Drop your hands and breathe.", state.voiceName);
+                            stopComboGeneration();
+                        } else {
+                            state.currentRound++;
+                        }
+                    }
+                    
+                    updateTimerDisplay(state.totalSeconds);
+                    document.getElementById('workout-name').textContent = state.isResting ? `Rest - Round ${state.currentRound} of ${numRounds}` : `Round ${state.currentRound} of ${numRounds}`;
+
+                } else {
+                    updateTimerDisplay(state.totalSeconds);
+
+                    if (state.totalSeconds === 10) {
+                        speakText(state.isResting ? "10 seconds left in rest." : "10 seconds remaining! Push hard!", state.voiceName);
+                    } else if (state.totalSeconds === 3) {
+                        speakText(state.isResting ? "3." : "3.", state.voiceName);
+                    } else if (state.totalSeconds === 2) {
+                        speakText(state.isResting ? "2." : "2.", state.voiceName);
+                    } else if (state.totalSeconds === 1) {
+                        speakText(state.isResting ? "1." : "1.", state.voiceName);
+                    }
+                }
+            }, 1000);
+            
+            if (!state.isResting) {
+                startComboGeneration();
+            }
+        }
+
+        function stopTimer() {
+            clearInterval(state.timerId);
+            stopComboGeneration();
+            if (currentAudioSource) {
+                try { currentAudioSource.stop(); } catch (e) {}
+                currentAudioSource = null;
+            }
+            
+            // --- NEW: Release Wake Lock ---
+            releaseWakeLock();
+
+            state.isRunning = false;
+            state.isPaused = false;
+            state.currentRound = 0;
+            state.totalSeconds = 0;
+            state.isResting = false;
+            state.lastMoveSide = null; 
+            
+            updateConfig(); 
+            updateTimerDisplay(parseInt(document.getElementById('round-duration').value) * 60);
+
+            // UI Reset
+            document.getElementById('start-pause-label').textContent = 'Start Training';
+            document.getElementById('start-pause-icon').dataset.lucide = 'play';
+            document.getElementById('stop-btn').classList.add('hidden');
+            document.getElementById('config-card').classList.remove('opacity-50', 'pointer-events-none');
+            document.getElementById('preview-btn').classList.remove('opacity-50', 'pointer-events-none');
+            document.getElementById('workout-name').textContent = "A boxing training app";
+            document.getElementById('combo-callout').innerHTML = '<span class="text-slate-400 text-base">Press Start to begin training!</span>';
+            lucide.createIcons();
+        }
+
+        function startComboGeneration() {
+            if (state.intervalId) return; 
+            state.intervalId = setInterval(generateCombo, state.comboGenerationInterval);
+        }
+
+        function stopComboGeneration() {
+            clearInterval(state.intervalId);
+            state.intervalId = null;
+        }
+
+        function generateCombo() {
+            const config = {
+                lengthLevel: parseInt(document.getElementById('combo-length-slider').value),
+                difficultyLevel: parseInt(document.getElementById('combo-difficulty-slider').value),
+                complexityLevel: parseInt(document.getElementById('move-complexity-slider').value),
+                punchVariety: document.getElementById('punch-complexity').value,
+                movesIncluded: document.getElementById('moves-included').value,
+            };
+
+            const comboLength = [1, 4, 6][config.lengthLevel] + Math.floor(Math.random() * [1, 2, 3][config.lengthLevel]);
+            let currentCombo = [];
+            let availableMoves = Object.keys(MOVES).filter(key => {
+                const move = MOVES[key];
+                if (config.punchVariety === 'Standard' && move.group === 'Punch' && (move.body || key === 'O' || key === 'E')) return false;
+                if (config.punchVariety === 'Body' && (key === 'O' || key === 'E')) return false;
+                if (config.punchVariety === 'Rare' && move.group === 'Punch' && (key === 'O' || key === 'E')) return true; 
+                if (config.movesIncluded === 'PunchesOnly' && move.group !== 'Punch') return false;
+                if (config.movesIncluded === 'PunchesAndDefense' && move.group === 'Footwork') return false;
+                return true;
+            });
+            
+            let currentLastMoveSide = state.lastMoveSide;
+            for (let i = 0; i < comboLength; i++) {
+                let nextMoveKey = null;
+                let potentialMoves = availableMoves;
+
+                if (i > 0) {
+                    if (config.difficultyLevel < 2) {
+                        potentialMoves = potentialMoves.filter(key => {
+                            const move = MOVES[key];
+                            if (move.group !== 'Punch') return true; 
+                            if (move.side !== currentLastMoveSide) return true; 
+                            
+                            if (config.difficultyLevel === 0) return false; 
+                            if (config.difficultyLevel === 1) return Math.random() < 0.3; 
+                            return true; 
+                        });
+                    }
+
+                    if (config.complexityLevel < 2) {
+                        potentialMoves = potentialMoves.filter(key => {
+                            const move = MOVES[key];
+                            if (move.group === 'Punch') return true;
+                            if (config.complexityLevel === 0) return false; 
+                            if (config.complexityLevel === 1) return Math.random() < 0.2; 
+                            return true; 
+                        });
+                    }
+                }
+                
+                const totalWeight = potentialMoves.reduce((sum, key) => sum + (MOVES[key].common || 1), 0);
+                let randomWeight = Math.random() * totalWeight;
+                
+                for (const key of potentialMoves) {
+                    randomWeight -= (MOVES[key].common || 1);
+                    if (randomWeight < 0) {
+                        nextMoveKey = key;
+                        break;
+                    }
+                }
+
+                if (nextMoveKey) {
+                    currentCombo.push(nextMoveKey);
+                    currentLastMoveSide = MOVES[nextMoveKey].side;
+                }
+            }
+
+            if (currentCombo.length > 0) {
+                const comboText = currentCombo.join(', ');
+                document.getElementById('combo-callout').textContent = comboText;
+                speakText(comboText.replace(/,/g, ' '), state.voiceName);
+                state.lastMoveSide = MOVES[currentCombo[currentCombo.length - 1]].side;
+            } else {
+                generateCombo(); 
+            }
+        }
+
+        // --- UI Handlers ---
+
+        async function handleStartPause() {
+            await initAudio(); 
+
+            if (!state.isRunning) {
+                // START
+                state.isRunning = true;
+                state.isPaused = false;
+                
+                document.getElementById('start-pause-label').textContent = 'Pause Training';
+                document.getElementById('start-pause-icon').dataset.lucide = 'pause';
+                document.getElementById('stop-btn').classList.remove('hidden');
+                document.getElementById('config-card').classList.add('opacity-50', 'pointer-events-none');
+                document.getElementById('preview-btn').classList.add('opacity-50', 'pointer-events-none');
+                
+                startTimer();
+            } else if (!state.isPaused) {
+                // PAUSE
+                state.isPaused = true;
+                clearInterval(state.timerId);
+                stopComboGeneration();
+                
+                // --- NEW: Release Wake Lock when paused ---
+                releaseWakeLock();
+
+                document.getElementById('start-pause-label').textContent = 'Resume Training';
+                document.getElementById('start-pause-icon').dataset.lucide = 'play';
+                document.getElementById('combo-callout').innerHTML = '<i data-lucide="pause" class="w-8 h-8 mr-2"></i> PAUSED';
+                speakText("Pause", state.voiceName);
+            } else {
+                // RESUME
+                state.isPaused = false;
+                
+                document.getElementById('start-pause-label').textContent = 'Pause Training';
+                document.getElementById('start-pause-icon').dataset.lucide = 'pause';
+                document.getElementById('combo-callout').innerHTML = 'Training Resumed...';
+                speakText("Go!", state.voiceName);
+                
+                startTimer(); 
+                if (!state.isResting) {
+                    startComboGeneration();
+                }
+            }
+            lucide.createIcons();
+        }
+
+        function handleVoiceChange(event) {
+            state.voiceName = event.target.value;
+            speakText("Voice test. One two three.", state.voiceName);
+        }
+
+        function showModal() {
+            document.getElementById('confirmation-modal').classList.remove('hidden');
+            document.getElementById('confirmation-modal').classList.add('flex');
+        }
+
+        function hideModal(id) {
+            document.getElementById(id).classList.add('hidden');
+            document.getElementById(id).classList.remove('flex');
+        }
+
+        function confirmStop() {
+            hideModal('confirmation-modal');
+            stopTimer();
+        }
+        
+        function showPreviewModal() {
+            const previewContent = document.getElementById('preview-content');
+            const previewMetadata = document.getElementById('preview-metadata');
+            previewContent.innerHTML = '';
+            
+            const intensityText = document.getElementById('combo-intensity').options[document.getElementById('combo-intensity').selectedIndex].text;
+            const lengthText = document.getElementById('length-label').textContent;
+            const difficultyText = document.getElementById('difficulty-label').textContent;
+            const complexityText = document.getElementById('complexity-label').textContent;
+            
+            previewMetadata.innerHTML = `
+                <p><strong>Pace:</strong> ${intensityText}</p>
+                <p><strong>Length:</strong> ${lengthText}</p>
+                <p><strong>Difficulty:</strong> ${difficultyText}</p>
+                <p><strong>Non-Punch Moves:</strong> ${complexityText.replace('Medium (', '').replace('High (', '').replace('Low (', '').replace(')', '')}</p>
+            `;
+
+            let sampleCombos = [];
+            for(let i = 0; i < 10; i++) {
+                generateComboPreview(sampleCombos);
+            }
+
+            sampleCombos.forEach((combo, index) => {
+                const comboEl = document.createElement('div');
+                comboEl.className = 'p-3 bg-slate-700 rounded-lg shadow-sm flex items-center justify-between';
+                comboEl.innerHTML = `
+                    <span class="font-bold text-lg text-amber-300">${index + 1}.</span>
+                    <span class="text-white text-xl font-mono tracking-wider">${combo}</span>
+                `;
+                previewContent.appendChild(comboEl);
+            });
+
+            function generateComboPreview(list) {
+                const config = {
+                    lengthLevel: parseInt(document.getElementById('combo-length-slider').value),
+                    difficultyLevel: parseInt(document.getElementById('combo-difficulty-slider').value),
+                    complexityLevel: parseInt(document.getElementById('move-complexity-slider').value),
+                    punchVariety: document.getElementById('punch-complexity').value,
+                    movesIncluded: document.getElementById('moves-included').value,
+                };
+
+                const comboLength = [1, 4, 6][config.lengthLevel] + Math.floor(Math.random() * [1, 2, 3][config.lengthLevel]);
+                let currentCombo = [];
+                let availableMoves = Object.keys(MOVES).filter(key => {
+                    const move = MOVES[key];
+                    if (config.punchVariety === 'Standard' && move.group === 'Punch' && (move.body || key === 'O' || key === 'E')) return false;
+                    if (config.punchVariety === 'Body' && (key === 'O' || key === 'E')) return false;
+                    if (config.movesIncluded === 'PunchesOnly' && move.group !== 'Punch') return false;
+                    if (config.movesIncluded === 'PunchesAndDefense' && move.group === 'Footwork') return false;
+                    return true;
+                });
+                
+                let currentLastMoveSide = null; 
+                for (let i = 0; i < comboLength; i++) {
+                    let nextMoveKey = null;
+                    let potentialMoves = availableMoves;
+
+                    if (i > 0) {
+                        if (config.difficultyLevel < 2) {
+                            potentialMoves = potentialMoves.filter(key => {
+                                const move = MOVES[key];
+                                if (move.group !== 'Punch') return true; 
+                                if (move.side !== currentLastMoveSide) return true; 
+                                
+                                if (config.difficultyLevel === 0) return false; 
+                                if (config.difficultyLevel === 1) return Math.random() < 0.3; 
+                                return true; 
+                            });
+                        }
+                        
+                        if (config.complexityLevel < 2) {
+                            potentialMoves = potentialMoves.filter(key => {
+                                const move = MOVES[key];
+                                if (move.group === 'Punch') return true;
+                                if (config.complexityLevel === 0) return false; 
+                                if (config.complexityLevel === 1) return Math.random() < 0.2; 
+                                return true; 
+                            });
+                        }
+                    }
+                    
+                    const totalWeight = potentialMoves.reduce((sum, key) => sum + (MOVES[key].common || 1), 0);
+                    let randomWeight = Math.random() * totalWeight;
+                    
+                    for (const key of potentialMoves) {
+                        randomWeight -= (MOVES[key].common || 1);
+                        if (randomWeight < 0) {
+                            nextMoveKey = key;
+                            break;
+                        }
+                    }
+
+                    if (nextMoveKey) {
+                        currentCombo.push(nextMoveKey);
+                        currentLastMoveSide = MOVES[nextMoveKey].side;
+                    }
+                }
+                if (currentCombo.length > 0) {
+                    list.push(currentCombo.join(', '));
+                } else {
+                    if(list.length < 10) generateComboPreview(list);
+                }
+            }
+            
+            document.getElementById('combo-preview-modal').classList.remove('hidden');
+            document.getElementById('combo-preview-modal').classList.add('flex');
+        }
+
+        // --- Initialization ---
+        window.onload = () => {
+            updateConfig();
+            updateTimerDisplay(parseInt(document.getElementById('round-duration').value) * 60);
+            updateVoiceVolume(); 
+            lucide.createIcons(); 
+            
+            document.getElementById('voice-volume-slider').dataset.lastVolume = DEFAULT_VOICE_VOLUME;
+        };
+
+    </script>
+</body>
+</html>
