@@ -290,7 +290,6 @@
             comboDifficulty: 1,     // 0: low (always alternate), 1: medium (some same-side), 2: high (frequent same-side)
             moveComplexity: 1,      // 0: low (only punches), 1: medium (occasional non-punches), 2: high (frequent non-punches)
             comboRepetitions: 3,    // 1, 2, or 3 times the combo is repeated
-            voicePreference: 'Google', // Preferred voice name fragment
             voiceVolume: 1,         // 0 to 1
             
             timerRunning: false,
@@ -314,9 +313,11 @@
             infoCard: document.getElementById('info-card'),
         };
 
-        // NEW VOICE GLOBAL STATE
+        // NEW VOICE GLOBAL STATE AND PREFERENCE ARRAY
         let selectedVoice = null;
         let voicesLoaded = false;
+        // Prioritize voices that are strong, clear, and assertive.
+        const preferredFemaleVoices = ['Samantha', 'Karen', 'Zira', 'Siri', 'Google US English', 'Microsoft Zira Mobile'];
         
         // Timer intervals and timeouts
         let timerInterval = null;
@@ -510,44 +511,62 @@
 
         // --- Audio Functions ---
         
-        // Global variable to hold the selected voice
-        
-        // Function to find a preferred voice and set up the voicesLoaded flag
-        function getVoice(voiceNamePreference) {
-            // Only set up the event listener once and if voices are not already loaded
-            if (!voicesLoaded && 'speechSynthesis' in window) {
-                speechSynthesis.onvoiceschanged = () => {
-                    const voices = window.speechSynthesis.getVoices();
-                    selectedVoice = voices.find(v => v.name.includes(voiceNamePreference) && v.lang.startsWith('en')) 
-                                    || voices.find(v => v.lang.startsWith('en')) 
-                                    || null;
-                    voicesLoaded = true;
-                    // Debugging/Logging
-                    if (selectedVoice) {
-                        console.log(`Voice loaded: ${selectedVoice.name}`);
-                    } else {
-                        console.warn("Could not find preferred voice. Using default or no voice.");
+        /**
+         * Attempts to find a preferred strong, female, assertive voice from the browser's list.
+         */
+        function getVoice() {
+            if (voicesLoaded) return selectedVoice;
+
+            // Function to load voices and select the best match
+            const loadVoicesAndSelect = () => {
+                if (voicesLoaded) return; // Prevent double execution
+                const voices = window.speechSynthesis.getVoices();
+                
+                // 1. Try to find a preferred strong/assertive female voice
+                for (const name of preferredFemaleVoices) {
+                    // Check if name is included, and language is English
+                    const match = voices.find(v => v.name.includes(name) && v.lang.startsWith('en'));
+                    if (match) {
+                        selectedVoice = match;
+                        break;
                     }
-                };
-                // Explicitly call getVoices to potentially trigger onvoiceschanged immediately 
-                window.speechSynthesis.getVoices();
-            }
+                }
+                
+                // 2. Fallback to any English female voice or default
+                if (!selectedVoice) {
+                    selectedVoice = voices.find(v => v.lang.startsWith('en') && (v.name.includes('female') || v.default)) || null;
+                }
+                
+                voicesLoaded = true;
+                if (selectedVoice) {
+                    console.log(`Voice selected: ${selectedVoice.name}`);
+                } else {
+                    console.warn("Could not find a suitable voice. Using system default fallback.");
+                }
+            };
+
+            // Set up the event listener for when voices change/load
+            speechSynthesis.onvoiceschanged = loadVoicesAndSelect;
+            
+            // Call immediately in case voices are already loaded
+            loadVoicesAndSelect();
+            
+            // Return the result, which might be null the first time this runs
             return selectedVoice;
         }
+
 
         function speakCallout(phrase) {
             if (config.voiceVolume === 0 || !('speechSynthesis' in window)) return;
 
-            // CRUCIAL FIX: If voices haven't loaded, skip speaking this time.
-            // The startTimer function ensures getVoice is called on the first user interaction.
+            // FIX: If voices haven't loaded yet, return early. getVoice() is called on user interaction (startTimer).
             if (!voicesLoaded) {
                 return;
             }
 
             const utterance = new SpeechSynthesisUtterance(phrase);
             utterance.volume = config.voiceVolume; 
-            // Use the globally selected voice (set by getVoice)
-            utterance.voice = selectedVoice || getVoice(config.voicePreference); 
+            utterance.voice = selectedVoice; // Use the globally selected voice
             utterance.rate = 1.0; 
 
             // Prevent stacking multiple callouts
@@ -841,7 +860,7 @@
                 
                 // FIX: Ensure voice is loaded on the first user interaction
                 if (!voicesLoaded) {
-                    getVoice(config.voicePreference);
+                    getVoice();
                 }
                 
                 // Ensure audio context is started on user interaction
