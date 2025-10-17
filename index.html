@@ -1,14 +1,17 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fight Me</title>
     
+    <!-- Load Atkinson Hyperlegible Next from Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
     
+    <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
+    <!-- Tailwind Configuration: Set Atkinson Hyperlegible Next as the default sans font -->
     <script>
         tailwind.config = {
             theme: {
@@ -21,7 +24,9 @@
         }
     </script>
     
+    <!-- Load Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Load Tone.js for sound generation (still useful for simple beep sounds) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
 
     <style>
@@ -128,12 +133,16 @@
 </head>
 <body class="min-h-screen flex items-center justify-center p-4 font-sans">
 
+    <!-- Confetti Container -->
     <div id="confetti-container"></div>
     
+    <!-- Main Application Container -->
     <div id="app" class="w-full max-w-sm sm:max-w-2xl bg-[--surface-color] shadow-2xl rounded-2xl p-6 sm:p-8 space-y-6 border border-slate-700">
         
+        <!-- Header with Fullscreen Button -->
         <header class="text-center flex justify-between items-center">
-            <div class="w-1/5"></div> <div class="flex-grow">
+            <div class="w-1/5"></div> <!-- Spacer -->
+            <div class="flex-grow">
                 <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-wide">Fight Me</h1>
                 <p id="workout-name" class="text-lg sm:text-xl text-slate-400 mt-1">A boxing training app</p>
             </div>
@@ -145,10 +154,12 @@
             </div>
         </header>
 
+        <!-- Dynamic Combination Callout Display -->
         <div id="combo-callout" class="text-center text-2xl sm:text-3xl text-amber-500 font-extrabold min-h-[50px] p-3 bg-slate-700/50 rounded-lg shadow-inner flex items-center justify-center">
             <span class="text-slate-400 text-base">Press Start to begin training!</span>
         </div>
 
+        <!-- Timer Display (Dual Time) -->
         <div class="text-center py-2 space-y-2">
             <div id="total-time-display" class="text-lg text-slate-400 font-semibold tabular-nums">
                 Total Remaining: 00:00
@@ -158,9 +169,11 @@
             </div>
         </div>
 
+        <!-- Configuration Tabs -->
         <div class="space-y-6 max-h-[60vh] overflow-y-auto">
             <div id="config-card" class="bg-slate-700 rounded-xl p-4 sm:p-6 space-y-6 shadow-xl opacity-100 transition-opacity duration-300">
                 
+                <!-- 1. Round Timing & Structure -->
                 <div class="space-y-3 border-b border-slate-600 pb-4">
                     <h3 class="text-xl font-bold text-amber-400">Timer Settings</h3>
                     <div class="grid grid-cols-3 gap-3 sm:gap-4">
@@ -182,9 +195,11 @@
                     </div>
                 </div>
 
+                <!-- 2. Core Combo Generation Controls (Sliders/Dropdowns) -->
                 <div class="space-y-4">
                     <h3 class="text-xl font-bold text-amber-400">Combo Logic Settings</h3>
 
+                    <!-- Combo Length Slider -->
                     <div class="space-y-2">
                         <label for="combo-length" class="text-sm font-semibold text-slate-300 block">1. Combo Length <span id="length-label" class="text-amber-300 ml-2 text-xs font-normal">Medium (1-4 Punches)</span></label>
                         <input type="range" id="combo-length-slider" min="0" max="2" value="1" step="1" oninput="updateConfig()"
@@ -194,6 +209,7 @@
                         </div>
                     </div>
 
+                    <!-- Combo Difficulty Slider (Consecutive Same-Side) -->
                     <div class="space-y-2">
                         <label for="combo-difficulty" class="text-sm font-semibold text-slate-300 block">2. Combo Difficulty <span id="difficulty-label" class="text-amber-300 ml-2 text-xs font-normal">Medium (Some Same-Side)</span></label>
                         <input type="range" id="combo-difficulty-slider" min="0" max="2" value="1" step="1" oninput="updateConfig()"
@@ -203,6 +219,7 @@
                         </div>
                     </div>
 
+                    <!-- Move Complexity Slider (Frequency of Non-Punches) -->
                     <div class="space-y-2">
                         <label for="move-complexity" class="text-sm font-semibold text-slate-300 block">3. Move Complexity <span id="complexity-label" class="text-amber-300 ml-2 text-xs font-normal">Medium (Occasional Non-Punches)</span></label>
                         <input type="range" id="move-complexity-slider" min="0" max="2" value="1" step="1" oninput="updateConfig()"
@@ -211,690 +228,834 @@
                             <span>Low</span><span>Medium</span><span>High</span>
                         </div>
                     </div>
-
-                    <div class="space-y-2 border-t border-slate-600 pt-4 mt-4">
-                        <label for="combo-intensity-select" class="text-sm font-semibold text-slate-300 block">4. Combo Intensity
-                            <span id="intensity-label" class="text-amber-300 ml-2 text-xs font-normal">Medium (2 Repetitions)</span>
-                        </label>
-                        <select id="combo-intensity-select" onchange="updateConfig()"
-                            class="w-full bg-slate-800 text-white p-2 rounded-lg border-2 border-slate-600 focus:border-amber-500 transition duration-150 appearance-none">
-                            <option value="3">Low (3 Repetitions)</option>
-                            <option value="2" selected>Medium (2 Repetitions)</option>
-                            <option value="1">High (1 Repetition)</option>
+                    
+                    <!-- Punch Complexity Dropdown (Punch Variety) -->
+                    <div class="space-y-1">
+                        <label for="punch-complexity" class="text-sm font-semibold text-slate-300 block">4. Punch Variety</label>
+                        <select id="punch-complexity" onchange="updateConfig()"
+                                class="w-full bg-slate-800 text-white p-3 rounded-lg border-2 border-slate-600 focus:border-amber-500 transition duration-150 pr-10 appearance-none">
+                            <option value="Standard">Standard Punches (1-6) Only</option>
+                            <option value="Body" selected>Include Body Shots (1b-6b)</option>
+                            <option value="Rare">Body Shots & Rare Punches (Overhand, Elbows)</option>
                         </select>
                     </div>
 
-                </div>
-            </div>
-
-                <div class="space-y-4">
-                    <h3 class="text-xl font-bold text-amber-400">Audio Settings</h3>
-
-                    <div class="space-y-2">
-                        <label for="voice-volume-slider" class="text-sm font-semibold text-slate-300 block">Voice Volume <span id="volume-label" class="text-amber-300 ml-2 text-xs font-normal">100%</span></label>
-                        <input type="range" id="voice-volume-slider" min="0" max="100" value="100" step="1" oninput="updateVoiceVolume();"
-                            class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer range-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
+                    <!-- Moves Included Dropdown (Move Type) -->
+                    <div class="space-y-1">
+                        <label for="moves-included" class="text-sm font-semibold text-slate-300 block">5. Moves Included</label>
+                        <select id="moves-included" onchange="updateConfig()"
+                                class="w-full bg-slate-800 text-white p-3 rounded-lg border-2 border-slate-600 focus:border-amber-500 transition duration-150 pr-10 appearance-none">
+                            <option value="PunchesOnly">Punches Only</option>
+                            <option value="PunchesAndDefense">Punches & Defensive Moves</option>
+                            <option value="All" selected>Punches, Defense, & Footwork</option>
+                        </select>
                     </div>
 
-                    <div class="space-y-2">
-                        <label for="voice-select" class="text-sm font-semibold text-slate-300 block">Voice Selection</label>
+                    <!-- Combo Intensity Dropdown -->
+                    <div class="space-y-1">
+                        <label for="combo-intensity" class="text-sm font-semibold text-slate-300 block">6. Combo Intensity</label>
+                        <select id="combo-intensity" onchange="updateConfig()"
+                                class="w-full bg-slate-800 text-white p-3 rounded-lg border-2 border-slate-600 focus:border-amber-500 transition duration-150 pr-10 appearance-none">
+                            <option value="Low">Low (Slower Pace - 4s)</option>
+                            <option value="Medium" selected>Medium (Standard Pace - 2.5s)</option>
+                            <option value="High">High (Fast Pace - 1.5s)</option>
+                        </select>
+                    </div>
+
+                    <!-- Training Mode Dropdown -->
+                    <div class="space-y-1">
+                        <label for="training-mode" class="text-sm font-semibold text-slate-300 block">7. Training Mode</label>
+                        <select id="training-mode" onchange="updateConfig()"
+                                class="w-full bg-slate-800 text-white p-3 rounded-lg border-2 border-slate-600 focus:border-amber-500 transition duration-150 pr-10 appearance-none">
+                            <option value="Shadowboxing" selected>Shadowboxing (Flow & Movement)</option>
+                            <option value="HeavyBag">Heavy Bag (Power & Fixed Target)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 3. Voice and Sound Controls -->
+                <div class="flex space-x-4 pt-4 border-t border-slate-600">
+                    <div class="space-y-1 w-2/3">
+                        <label for="voice-select" class="text-sm font-semibold text-slate-300 block">Voice Announcer</label>
+                        <!-- Simplified Voice Selector for Native TTS -->
                         <select id="voice-select" onchange="updateConfig()"
-                            class="w-full bg-slate-800 text-white p-2 rounded-lg border-2 border-slate-600 focus:border-amber-500 transition duration-150 appearance-none">
-                            </select>
+                                class="w-full bg-slate-800 text-white p-3 rounded-lg border-2 border-slate-600 focus:border-amber-500 transition duration-150 pr-10 appearance-none">
+                            <option value="Native" selected>Native Browser Voice</option>
+                            <!-- Note: Additional native voices could be populated via JavaScript if needed -->
+                        </select>
+                    </div>
+
+                    <!-- Volume Control -->
+                    <div class="space-y-1 w-1/3">
+                        <label class="text-sm font-semibold text-slate-300 block">Volume</label>
+                        <div class="flex items-center space-x-2">
+                            <button id="mute-btn" onclick="toggleMute()" 
+                                class="flex-shrink-0 p-2 bg-slate-800 hover:bg-slate-600 text-white rounded-lg border-2 border-slate-600 transition duration-150">
+                                <i data-lucide="volume-2" class="w-5 h-5" id="mute-icon"></i>
+                            </button>
+                            <input type="range" id="voice-volume-slider" min="0" max="100" value="75" oninput="updateVoiceVolume()"
+                                class="w-full h-2 bg-slate-800 rounded-lg cursor-pointer">
+                            <span id="voice-volume-db" class="text-xs text-amber-400 w-10 text-right font-mono">0.0 dB</span>
+                        </div>
                     </div>
                 </div>
-
-                <div class="text-center">
-                    <button id="toggle-config-btn" onclick="toggleConfig()" 
-                        class="text-slate-400 hover:text-amber-400 text-sm font-semibold transition duration-150 flex items-center justify-center mx-auto space-x-2">
-                        <span>Hide Settings</span>
-                        <i data-lucide="chevron-up" class="w-4 h-4" id="config-toggle-icon"></i>
-                    </button>
-                </div>
-
             </div>
         </div>
+        <!-- End Configuration Card -->
 
-        <div class="flex justify-between items-center space-x-3">
-            <button id="start-btn" onclick="startTimer()"
-                class="flex-1 bg-green-600 text-white p-4 rounded-xl font-extrabold text-xl shadow-lg hover:bg-green-700 transition duration-150 active:scale-[0.98]">
-                <i data-lucide="play" class="w-6 h-6 inline-block mr-2 align-text-bottom"></i>Start
-            </button>
-            <button id="pause-btn" onclick="pauseTimer()" style="display:none;"
-                class="flex-1 bg-amber-600 text-white p-4 rounded-xl font-extrabold text-xl shadow-lg hover:bg-amber-700 transition duration-150 active:scale-[0.98]">
-                <i data-lucide="pause" class="w-6 h-6 inline-block mr-2 align-text-bottom"></i>Pause
-            </button>
-            <button id="stop-btn" onclick="stopTimer()" disabled
-                class="w-1/4 bg-red-600 text-white p-4 rounded-xl font-extrabold text-xl shadow-lg hover:bg-red-700 transition duration-150 disabled:bg-slate-500 active:scale-[0.98]">
-                <i data-lucide="square" class="w-6 h-6 inline-block"></i>
-            </button>
-            <button id="skip-btn" onclick="skipToNextRound()" disabled
-                class="w-1/4 bg-slate-500 text-white p-4 rounded-xl font-extrabold text-xl shadow-lg hover:bg-slate-600 transition duration-150 disabled:opacity-50 active:scale-[0.98]">
-                <i data-lucide="skip-forward" class="w-6 h-6 inline-block"></i>
-            </button>
-        </div>
+        <!-- Preview Button -->
+        <button id="preview-btn" onclick="showPreviewModal()"
+                class="w-full bg-slate-600 hover:bg-slate-500 active:bg-slate-700 text-white font-semibold py-3 px-6 rounded-xl text-lg transition duration-150 ease-in-out shadow-md shadow-slate-800/50 flex items-center justify-center space-x-2 active:scale-[0.99]">
+            <i data-lucide="eye" class="w-5 h-5"></i> Preview Combos
+        </button>
 
-        <div class="pt-4 border-t border-slate-700">
-            <h3 class="text-lg font-bold text-slate-300 mb-2">Round History</h3>
-            <div id="history-log" class="text-sm text-slate-400 space-y-1 max-h-32 overflow-y-auto p-2 bg-slate-800 rounded-lg">
-                <p>No rounds completed yet.</p>
-            </div>
+        <!-- Controls Section -->
+        <div id="controls" class="flex flex-col gap-4 justify-center">
+            <button id="start-pause-btn" onclick="handleStartPause()"
+                    class="w-full text-slate-900 font-extrabold py-5 px-8 rounded-xl text-xl sm:text-2xl uppercase tracking-widest flex items-center justify-center space-x-3 transition duration-200 ease-in-out shadow-2xl bg-amber-500 hover:bg-amber-600 active:bg-amber-700 shadow-amber-500/50 active:scale-[0.99]">
+                <span id="start-pause-icon"><i data-lucide="play" class="w-8 h-8"></i></span>
+                <span id="start-pause-label">Start Training</span>
+            </button>
+
+            <button id="stop-btn" onclick="showModal()"
+                    class="hidden w-full bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-semibold py-3 px-6 rounded-xl text-lg transition duration-150 ease-in-out shadow-md shadow-red-800/50 active:scale-[0.99]">
+                <i data-lucide="square" class="w-5 h-5 inline-block mr-2"></i> Stop & Reset
+            </button>
         </div>
 
     </div>
 
+    <!-- Confirmation Modal (Stop) -->
+    <div id="confirmation-modal" class="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-slate-800 rounded-lg p-6 w-full max-w-xs sm:max-w-sm shadow-2xl border border-slate-700 transform transition duration-300 scale-100">
+            <h2 class="text-xl font-bold mb-2 text-white">Stop Training?</h2>
+            <p class="text-slate-400 mb-6 text-sm">Are you sure you want to stop? Your current progress will be lost.</p>
+            <div class="flex justify-end space-x-3">
+                <button onclick="hideModal('confirmation-modal')" class="px-3 py-2 text-sm font-medium rounded-lg text-amber-400 hover:bg-slate-700 transition uppercase">Cancel</button>
+                <button onclick="confirmStop()" class="px-4 py-2 text-sm font-bold rounded-lg text-white bg-red-600 hover:bg-red-700 transition uppercase shadow-md">Stop & Reset</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Combo Preview Modal -->
+    <div id="combo-preview-modal" class="fixed inset-0 bg-black bg-opacity-80 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-slate-800 rounded-xl p-6 w-full max-w-lg shadow-2xl border border-slate-700 transform transition duration-300">
+            <h2 class="text-2xl font-extrabold mb-2 text-white flex items-center space-x-2">
+                <i data-lucide="clipboard-list" class="w-6 h-6 text-amber-400"></i>
+                <span>Workout Preview</span>
+            </h2>
+            <div id="preview-metadata" class="mb-4 text-sm font-semibold border-b border-slate-700 pb-3">
+                <!-- Metadata will be injected here -->
+            </div>
+            <div id="preview-content" class="max-h-96 overflow-y-auto space-y-4">
+                <!-- Combos will be injected here -->
+            </div>
+            <div class="flex justify-end mt-6">
+                <button onclick="hideModal('combo-preview-modal')" class="px-4 py-2 text-sm font-bold rounded-lg text-white bg-amber-500 hover:bg-amber-600 transition uppercase shadow-md">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Logic -->
     <script>
-        // Tone.js requires a user interaction to start the audio context
-        let audioContextStarted = false;
-        const synth = new Tone.Synth().toDestination();
-
-        // --- Configuration & State ---
-
-        const config = {
-            roundDuration: 180, // seconds
-            restDuration: 60, // seconds
-            numRounds: 5,
-            comboLength: 1, // 0=Short (1-2), 1=Medium (1-4), 2=Long (3-6)
-            comboDifficulty: 1, // 0=Low (Alt hands), 1=Medium (Some same-side), 2=High (Frequent same-side)
-            moveComplexity: 1, // 0=Low (Punches only), 1=Medium (Occasional non-punch), 2=High (Frequent non-punch)
-            comboRepetitions: 2, // 1=High, 2=Medium, 3=Low. Value is the repetition count.
-            voiceVolume: 1, // 0.0 to 1.0
-            voiceURI: null,
+        // --- Move Definitions (unchanged) ---
+        const MOVES = {
+            // Standard Punches
+            '1': { text: '1', side: 'L', group: 'Punch', body: false, head: true, common: 10 }, 
+            '2': { text: '2', side: 'R', group: 'Punch', body: false, head: true, common: 10 },
+            '3': { text: '3', side: 'L', group: 'Punch', body: false, head: true, common: 8 },
+            '4': { text: '4', side: 'R', group: 'Punch', body: false, head: true, common: 8 },
+            '5': { text: '5', side: 'L', group: 'Punch', body: false, head: true, common: 7 },
+            '6': { text: '6', side: 'R', group: 'Punch', body: false, head: true, common: 7 },
+            // Body Punches
+            '1b': { text: '1 body', side: 'L', group: 'Punch', body: true, head: false, common: 5 },
+            '2b': { text: '2 body', side: 'R', group: 'Punch', body: true, head: false, common: 5 },
+            '3b': { text: '3 body', side: 'L', group: 'Punch', body: true, head: false, common: 4 },
+            '4b': { text: '4 body', side: 'R', group: 'Punch', body: true, head: false, common: 4 },
+            '5b': { text: '5 body', side: 'L', group: 'Punch', body: true, head: false, common: 3 },
+            '6b': { text: '6 body', side: 'R', group: 'Punch', body: true, head: false, common: 3 },
+            // Rare Punches
+            'O': { text: 'Overhand', side: 'R', group: 'Punch', body: false, head: true, common: 2 },
+            'E': { text: 'Elbow', side: 'R', group: 'Punch', body: false, head: true, common: 1 },
+            // Defense
+            'S': { text: 'Slip', side: 'D', group: 'Defense', common: 5 },
+            'R': { text: 'Roll', side: 'D', group: 'Defense', common: 5 },
+            'P': { text: 'Parry', side: 'D', group: 'Defense', common: 4 },
+            'B': { text: 'Block', side: 'D', group: 'Defense', common: 3 },
+            'C': { text: 'Clinch', side: 'D', group: 'Defense', common: 1 },
+            // Footwork
+            'F': { text: 'Step Forward', side: 'F', group: 'Footwork', common: 3 },
+            'K': { text: 'Step Back', side: 'F', group: 'Footwork', common: 3 },
+            'A': { text: 'Pivot', side: 'F', group: 'Footwork', common: 1 },
+            'D': { text: 'Duck', side: 'D', group: 'Defense', common: 2 }, // Added Duck
+            // Commands
+            'G': { text: 'Guard Up', side: 'C', group: 'Command', common: 2 },
+            'I': { text: 'Switch Stance', side: 'C', group: 'Command', common: 1 },
         };
 
-        const state = {
-            state: 'STOPPED', // 'STOPPED', 'PREP', 'RUNNING', 'REST', 'ROUND_END', 'FINISHED'
+        // --- Global State Variables ---
+        let config = {};
+        let state = {
+            isRunning: false,
+            isPaused: false,
             currentRound: 0,
-            currentRoundTime: 0,
-            timeToNextCombo: 0, // Tracks the remaining time for the current combo sequence
+            timeRemaining: 0,
+            totalDuration: 0, // Total time in seconds for the whole workout
+            isWorkPhase: true,
+            lastSide: null, // 'L' or 'R' or 'D' or 'F' or 'C'
+            comboInterval: null,
+            comboDurationMs: 2500, // Default to Medium intensity
             timerInterval: null,
-            totalWorkoutTime: 0,
+            isMuted: false,
         };
 
-        // UI Elements
-        const timerDisplay = document.getElementById('timer-display');
-        const totalTimeDisplay = document.getElementById('total-time-display');
-        const comboCallout = document.getElementById('combo-callout');
-        const startBtn = document.getElementById('start-btn');
-        const pauseBtn = document.getElementById('pause-btn');
-        const stopBtn = document.getElementById('stop-btn');
-        const skipBtn = document.getElementById('skip-btn');
-        const configCard = document.getElementById('config-card');
-        const historyLog = document.getElementById('history-log');
+        // --- TTS and OS Globals ---
+        let detectedOS = 'Other';
+        let selectedVoice = null;
+        
+        // Define preferred voice keywords for US English TTS, based on OS
+        const preferredVoices = {
+            'iOS': ['samantha', 'siri', 'ava', 'daniel'],
+            'macOS': ['alex', 'samantha', 'ava', 'daniel'],
+            'Android': ['google', 'default', 'en-us'], // Look for Google or a generic English voice
+            'Windows': ['zira', 'david'], // Microsoft voices
+            'Other': ['google', 'en-us', 'default']
+        };
 
-        // Combo definitions
-        const punches = [
-            { display: '1 (Jab)', spoken: 'one', hand: 'lead' },
-            { display: '2 (Cross)', spoken: 'two', hand: 'rear' },
-            { display: '3 (Lead Hook)', spoken: 'three', hand: 'lead' },
-            { display: '4 (Rear Hook)', spoken: 'four', hand: 'rear' },
-            { display: '5 (Lead Uppercut)', spoken: 'five', spokenShort: 'five', hand: 'lead' },
-            { display: '6 (Rear Uppercut)', spoken: 'six', spokenShort: 'six', hand: 'rear' },
-            { display: '1B (Body Jab)', spoken: 'one body', hand: 'lead' },
-            { display: '2B (Body Cross)', spoken: 'two body', hand: 'rear' },
-            { display: '3B (Body Hook)', spoken: 'three body', hand: 'lead' },
-            { display: '4B (Body Hook)', spoken: 'four body', hand: 'rear' },
-        ];
-        // Non-punch moves
-        const moves = [
-            { display: 'Slip L', spoken: 'slip left' },
-            { display: 'Slip R', spoken: 'slip right' },
-            { display: 'Roll L', spoken: 'roll left' },
-            { display: 'Roll R', spoken: 'roll right' },
-            { display: 'Pivot', spoken: 'pivot' },
-            { display: 'Feint', spoken: 'feint' }
-        ];
+        // --- DOM Elements ---
+        const DOMElements = {
+            timerDisplay: document.getElementById('timer-display'),
+            totalTimeDisplay: document.getElementById('total-time-display'),
+            startPauseBtn: document.getElementById('start-pause-btn'),
+            startPauseIcon: document.getElementById('start-pause-icon'),
+            startPauseLabel: document.getElementById('start-pause-label'),
+            stopBtn: document.getElementById('stop-btn'),
+            configCard: document.getElementById('config-card'),
+            comboCallout: document.getElementById('combo-callout'),
+            muteIcon: document.getElementById('mute-icon'),
+            volumeSlider: document.getElementById('voice-volume-slider'),
+            volumeDb: document.getElementById('voice-volume-db'),
+            fullscreenIcon: document.getElementById('fullscreen-icon'),
+        };
 
-        // --- Configuration Handlers ---
+        // --- Audio Context for Tones ---
+        const synth = new Tone.Synth().toDestination();
+        const feedbackDelay = new Tone.FeedbackDelay("8n", 0.5).toDestination();
+        synth.connect(feedbackDelay);
+        synth.volume.value = -20; // Keep synth quiet
 
-        function updateConfig() {
-            // Timer settings
-            config.roundDuration = parseInt(document.getElementById('round-duration').value) * 60;
-            config.restDuration = parseInt(document.getElementById('rest-duration').value) * 60;
-            config.numRounds = parseInt(document.getElementById('num-rounds').value);
+        // --- OS Detection and TTS Initialization ---
 
-            // Combo Length
-            const lengthSlider = document.getElementById('combo-length-slider');
-            config.comboLength = parseInt(lengthSlider.value);
-            const lengthLabels = ['Short (1-2 Punches)', 'Medium (1-4 Punches)', 'Long (3-6 Punches)'];
-            document.getElementById('length-label').textContent = lengthLabels[config.comboLength];
+        /** Detects the operating system for optimized TTS selection. */
+        function detectOS() {
+            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+                detectedOS = 'iOS';
+            } else if (/Macintosh|MacIntel|MacPPC|Mac68K/.test(userAgent)) {
+                detectedOS = 'macOS';
+            } else if (/Android/.test(userAgent)) {
+                detectedOS = 'Android';
+            } else if (/Win/.test(userAgent)) {
+                detectedOS = 'Windows';
+            }
+            console.log(`Detected OS for TTS optimization: ${detectedOS}`);
+        }
 
-            // Combo Difficulty (Same-Side)
-            const difficultySlider = document.getElementById('combo-difficulty-slider');
-            config.comboDifficulty = parseInt(difficultySlider.value);
-            const difficultyLabels = ['Low (Alt Hands)', 'Medium (Some Same-Side)', 'High (Frequent Same-Side)'];
-            document.getElementById('difficulty-label').textContent = difficultyLabels[config.comboDifficulty];
+        /** Initializes TTS, detects the OS, and selects the best voice. */
+        function initializeTTS() {
+            detectOS();
+            
+            if (!('speechSynthesis' in window)) {
+                console.warn("Native TTS not supported in this browser.");
+                return;
+            }
 
-            // Move Complexity (Non-Punches)
-            const complexitySlider = document.getElementById('move-complexity-slider');
-            config.moveComplexity = parseInt(complexitySlider.value);
-            const complexityLabels = ['Low (Punches Only)', 'Medium (Occasional Non-Punches)', 'High (Frequent Non-Punches)'];
-            document.getElementById('complexity-label').textContent = complexityLabels[config.moveComplexity];
+            const setVoice = () => {
+                const voices = window.speechSynthesis.getVoices();
+                if (voices.length === 0) return; // Voices not loaded yet
 
-            // New: Combo Intensity Repetitions
-            const intensitySelect = document.getElementById('combo-intensity-select');
-            if (intensitySelect) {
-                config.comboRepetitions = parseInt(intensitySelect.value);
-                // Update label
-                const label = document.getElementById('intensity-label');
-                if (label) {
-                    label.textContent = `${intensitySelect.options[intensitySelect.selectedIndex].text}`;
+                const langPrefix = 'en-US'; // Focus on US English voices
+
+                // 1. Get search terms based on OS, falling back to generic Android/Google terms
+                const searchTerms = preferredVoices[detectedOS] || preferredVoices['Other']; 
+                
+                // 2. Try to find an OS-specific preferred voice
+                let foundVoice = voices.find(voice => 
+                    voice.lang.startsWith(langPrefix) && 
+                    searchTerms.some(term => voice.name.toLowerCase().includes(term))
+                );
+
+                // 3. Fallback: Find the first US English voice
+                if (!foundVoice) {
+                    foundVoice = voices.find(voice => voice.lang.startsWith(langPrefix));
                 }
+
+                // 4. Final Fallback: Use the very first voice
+                if (!foundVoice) {
+                    foundVoice = voices[0];
+                }
+
+                selectedVoice = foundVoice;
+                
+                console.info(`TTS Initialized. Selected Voice: ${selectedVoice ? selectedVoice.name : 'Default/None'}`);
+                
+                // Log TTS is ready for the user
+                if (selectedVoice) {
+                    DOMElements.comboCallout.innerHTML = `<span class="text-slate-400 text-base">TTS ready. Press Start!</span>`;
+                }
+            };
+
+            // CRITICAL for mobile (Android/Firefox) - must wait for voices to load
+            if (window.speechSynthesis.onvoiceschanged !== undefined) {
+                window.speechSynthesis.onvoiceschanged = setVoice;
             }
             
-            // Recalculate total workout time
-            updateTotalTimeDisplay();
+            // Attempt to set voice immediately for desktop browsers
+            setVoice();
+        }
 
-            // Speak a sample combo if the timer is stopped
-            if (state.state === 'STOPPED') {
-                comboCallout.innerHTML = generateCombo().comboDisplay;
+
+        /**
+         * Uses the browser's native TTS to speak the provided text, using the pre-selected voice.
+         * @param {string} text - The text to be synthesized.
+         */
+        function speakText(text) {
+            if (!('speechSynthesis' in window) || !selectedVoice) {
+                console.warn("TTS not ready or supported. Using console log.");
+                console.log(`[TTS Fallback]: ${text}`);
+                return;
+            }
+
+            if (state.isMuted) return;
+            
+            // Stop any currently speaking utterance
+            window.speechSynthesis.cancel(); 
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            
+            // Use the selected, optimized voice
+            utterance.voice = selectedVoice; 
+
+            // Native TTS volume is 0.0 to 1.0. Slider goes 0-100.
+            utterance.volume = (DOMElements.volumeSlider.value / 100); 
+
+            // Speaking rate (slightly faster than default for a boxing coach)
+            utterance.rate = 1.1; 
+            
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // --- Core Timer & Control Functions (Rest of the functions remain the same) ---
+
+        /** Updates the configuration based on UI inputs and recalculates total time. */
+        function updateConfig() {
+            const roundMins = parseInt(document.getElementById('round-duration').value) || 3;
+            const restMins = parseInt(document.getElementById('rest-duration').value) || 1;
+            const numRounds = parseInt(document.getElementById('num-rounds').value) || 5;
+
+            // Combo Generation Settings
+            const comboLength = parseInt(document.getElementById('combo-length-slider').value);
+            const comboDifficulty = parseInt(document.getElementById('combo-difficulty-slider').value);
+            const moveComplexity = parseInt(document.getElementById('move-complexity-slider').value);
+            const punchComplexity = document.getElementById('punch-complexity').value;
+            const movesIncluded = document.getElementById('moves-included').value;
+            const comboIntensity = document.getElementById('combo-intensity').value;
+
+            // Calculate combo timing
+            const intensityMap = { 'Low': 4000, 'Medium': 2500, 'High': 1500 };
+            state.comboDurationMs = intensityMap[comboIntensity];
+
+            // Update UI labels for sliders
+            document.getElementById('length-label').textContent = ['Short (1-2 Punches)', 'Medium (1-4 Punches)', 'Long (3-6 Punches)'][comboLength];
+            document.getElementById('difficulty-label').textContent = ['Low (Alternating)', 'Medium (Some Same-Side)', 'High (Challenging Same-Side)'][comboDifficulty];
+            document.getElementById('complexity-label').textContent = ['Low (Punches Only)', 'Medium (Occasional Non-Punches)', 'High (Frequent Non-Punches)'][moveComplexity];
+
+
+            config = {
+                roundDuration: roundMins * 60,
+                restDuration: restMins * 60,
+                numRounds: numRounds,
+                // Combo Settings
+                comboLengthSetting: comboLength,
+                comboDifficultySetting: comboDifficulty,
+                moveComplexitySetting: moveComplexity,
+                punchComplexitySetting: punchComplexity,
+                movesIncludedSetting: movesIncluded,
+                comboIntensitySetting: comboIntensity,
+            };
+
+            const totalTimeSec = (config.roundDuration + config.restDuration) * config.numRounds - config.restDuration;
+            state.totalDuration = totalTimeSec;
+            DOMElements.totalTimeDisplay.textContent = `Total Remaining: ${formatTime(totalTimeSec)}`;
+
+            // Reset initial display if not running
+            if (!state.isRunning) {
+                state.timeRemaining = config.roundDuration;
+                state.currentRound = 1;
+                updateDisplay();
             }
         }
 
-        function updateVoiceVolume() {
-            const volumeSlider = document.getElementById('voice-volume-slider');
-            config.voiceVolume = parseInt(volumeSlider.value) / 100;
-            document.getElementById('volume-label').textContent = `${volumeSlider.value}%`;
-            
-            // Set Tone.js master volume
-            // Note: Tone.Master is deprecated in newer versions, but common in v14.
-            if (typeof Tone !== 'undefined' && Tone.Master) {
-                // Tone.js volume is logarithmic. -20dB is a good starting point for 0.5 (50%)
-                const minDb = -30; // Very quiet
-                const maxDb = 0;   // Full volume
-                // Linear mapping from 0 to 1 to logarithmic dB scale
-                const dbVolume = minDb + (maxDb - minDb) * config.voiceVolume;
-                Tone.Master.volume.value = dbVolume;
-            }
-        }
-
-        // --- Utility Functions ---
-
+        /** Formats seconds into MM:SS string. */
         function formatTime(totalSeconds) {
             const minutes = Math.floor(totalSeconds / 60);
             const seconds = totalSeconds % 60;
             return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
         }
 
-        function updateTotalTimeDisplay() {
-            const remainingRounds = config.numRounds - state.currentRound;
-            // Calculate remaining work time (if in a round) + remaining rest/prep time
-            const totalRoundSeconds = (config.roundDuration + config.restDuration);
-            let totalRemaining = (remainingRounds * totalRoundSeconds);
+        /** Updates the visual timer and round display. */
+        function updateDisplay() {
+            const { isWorkPhase, timeRemaining, currentRound, totalDuration } = state;
+            const { timerDisplay, totalTimeDisplay, comboCallout } = DOMElements;
 
-            // Adjust for current time in the round
-            if (state.state === 'RUNNING') {
-                // Remove time already spent in the current round
-                totalRemaining -= (config.roundDuration - state.currentRoundTime);
-                totalRemaining += config.restDuration; // Add back the full rest time
-            } else if (state.state === 'REST' || state.state === 'PREP') {
-                // Remove time already spent in rest/prep
-                totalRemaining -= (config.restDuration - state.currentRoundTime);
+            timerDisplay.textContent = formatTime(timeRemaining);
+            
+            // Update total time remaining
+            const elapsed = ((config.roundDuration + config.restDuration) * (currentRound - 1) + (isWorkPhase ? (config.roundDuration - timeRemaining) : (config.restDuration - timeRemaining + config.roundDuration)));
+            const remainingTotal = Math.max(0, totalDuration - elapsed);
+            totalTimeDisplay.textContent = `Total Remaining: ${formatTime(remainingTotal)}`;
+
+            const phaseDuration = isWorkPhase ? config.roundDuration : config.restDuration;
+            const roundIndicator = `Round ${currentRound}/${config.numRounds}`;
+
+            let displayPhase = isWorkPhase ? 'Work' : 'Rest';
+            let colorVar = isWorkPhase ? 'var(--work-color)' : 'var(--rest-color)';
+
+            // Update colors and text
+            timerDisplay.style.color = colorVar;
+            comboCallout.style.borderColor = colorVar;
+
+            if (state.isRunning || state.isPaused) {
+                document.getElementById('workout-name').textContent = `${roundIndicator} - ${displayPhase}`;
             }
-            
-            // Add a small buffer for FINISHED state to avoid negative time on display
-            if (state.state === 'FINISHED') totalRemaining = 0;
-            
-            totalTimeDisplay.textContent = `Total Remaining: ${formatTime(Math.max(0, totalRemaining))}`;
-        }
 
-        function playBeep(frequency, duration) {
-            if (!audioContextStarted) return;
-            const now = Tone.now();
-            synth.triggerAttackRelease(frequency, duration, now);
-        }
-
-        // Global speech object
-        const utterance = new SpeechSynthesisUtterance();
-
-        function speak(text) {
-            if ('speechSynthesis' in window && config.voiceURI) {
-                utterance.text = text;
-                utterance.volume = config.voiceVolume;
-                utterance.voice = speechSynthesis.getVoices().find(v => v.voiceURI === config.voiceURI);
-                speechSynthesis.cancel(); // Stop any current speech
-                speechSynthesis.speak(utterance);
+            // Flashing warning in the last 10 seconds of a round
+            if (timeRemaining <= 10 && timeRemaining > 0) {
+                timerDisplay.style.color = timeRemaining % 2 === 0 ? 'var(--warn-color)' : colorVar;
             }
         }
 
-        function populateVoiceList() {
-            const voices = speechSynthesis.getVoices();
-            const select = document.getElementById('voice-select');
-            select.innerHTML = '';
-            
-            let preferredVoice = null;
-            
-            voices.forEach(voice => {
-                const option = document.createElement('option');
-                option.textContent = `${voice.name} (${voice.lang})`;
-                option.setAttribute('value', voice.voiceURI);
-                
-                // Try to auto-select a good, non-default voice (e.g., Google or a clear one)
-                if (voice.name.includes('Google') || voice.name.includes('Samantha') || voice.default) {
-                    if (!preferredVoice || voice.default) {
-                         preferredVoice = voice;
-                    }
+        /** Generates a single, random boxing move (punch, defense, footwork). */
+        function generateRandomMove(validKeys) {
+            const totalCommonality = validKeys.reduce((sum, key) => sum + (MOVES[key].common || 1), 0);
+            let rand = Math.random() * totalCommonality;
+
+            for (const key of validKeys) {
+                rand -= (MOVES[key].common || 1);
+                if (rand <= 0) {
+                    return key;
                 }
-
-                select.appendChild(option);
-            });
-
-            // Set the selected voice
-            if (preferredVoice) {
-                select.value = preferredVoice.voiceURI;
-                config.voiceURI = preferredVoice.voiceURI;
-            } else if (voices.length > 0) {
-                config.voiceURI = voices[0].voiceURI;
             }
+            return validKeys[validKeys.length - 1]; // Fallback
         }
-        
-        // --- Combo Generation Logic ---
 
-        /**
-         * Generates a random boxing combination based on current configuration.
-         * @returns {object} Contains comboDisplay (HTML), comboSpoken (TTS string), and totalComboTime (seconds).
-         */
+        /** Generates the main combo string based on configured difficulty. */
         function generateCombo() {
-            // Determine combo length range based on config
-            const lengthRanges = [[1, 2], [1, 4], [3, 6]];
-            const [minLength, maxLength] = lengthRanges[config.comboLength];
-            const length = Math.floor(Math.random() * (maxLength - minLength + 1)) + minLength;
-            
-            // Determine difficulty probabilities for same-hand follow-ups
-            const difficultyProbabilities = [0.1, 0.4, 0.7]; // Low, Medium, High chance of same-side punch
-            const sameHandProb = difficultyProbabilities[config.comboDifficulty];
+            const { comboLengthSetting, comboDifficultySetting, moveComplexitySetting, punchComplexitySetting, movesIncludedSetting } = config;
 
-            // Determine complexity probabilities for non-punch moves
-            const complexityProbabilities = [0.0, 0.2, 0.5]; // Low, Medium, High chance of a non-punch move
-            const moveProb = complexityProbabilities[config.moveComplexity];
-            
-            const comboArray = [];
-            let lastHand = null;
-
-            for (let i = 0; i < length; i++) {
-                let nextMove = null;
-                let isPunch = false;
+            // 1. Determine valid moves based on complexity settings
+            let validMoveKeys = Object.keys(MOVES).filter(key => {
+                const move = MOVES[key];
                 
-                // 1. Decide between punch and non-punch move
-                if (Math.random() < moveProb && i < length - 1) { // Avoid ending on a non-punch move for flow
-                    nextMove = moves[Math.floor(Math.random() * moves.length)];
-                    isPunch = false;
-                } else {
-                    isPunch = true;
-                    // 2. Select a punch, considering same-hand difficulty
-                    let availablePunches = punches.filter(p => p.hand !== lastHand);
-
-                    // Allow same-hand if the check passes
-                    if (Math.random() < sameHandProb || lastHand === null) {
-                        // Allow any punch (or it's the first one)
-                        availablePunches = punches;
-                    }
-                    
-                    nextMove = availablePunches[Math.floor(Math.random() * availablePunches.length)];
-                    lastHand = nextMove.hand;
+                // Filter by Punch Complexity
+                if (punchComplexitySetting === 'Standard' && (move.body || move.text === 'Overhand' || move.text === 'Elbow')) {
+                    return false;
+                } else if (punchComplexitySetting === 'Body' && (move.text === 'Overhand' || move.text === 'Elbow')) {
+                    return false;
                 }
 
-                comboArray.push(isPunch ? nextMove.display.split(' ')[0] : nextMove.display);
-            }
+                // Filter by Moves Included (Defense/Footwork)
+                if (move.group === 'Defense' || move.group === 'Footwork' || move.group === 'Command') {
+                    if (movesIncludedSetting === 'PunchesOnly') return false;
+                    if (movesIncludedSetting === 'PunchesAndDefense' && move.group === 'Footwork') return false;
+                }
 
-            const comboDisplay = comboArray.join('-');
-            
-            // --- NEW: Calculate Combo Duration and create repeated spoken phrase ---
-            const comboLength = comboArray.length; // Number of moves in the combo
-            const repetitions = config.comboRepetitions;
-            
-            // Calculate total time (1 second per move assumed)
-            const totalComboTime = comboLength * repetitions; 
-
-            // Create the list of spoken words for the sequence
-            const spokenWords = comboArray.map(item => {
-                const punch = punches.find(p => p.display.startsWith(item));
-                const move = moves.find(m => m.display === item);
-                return punch ? punch.spoken : (move ? move.spoken : item);
+                return true;
             });
-            
-            // Repeat the spoken string
-            const comboSpokenPhrase = spokenWords.join(', ');
-            let repeatedSpoken = Array(repetitions).fill(comboSpokenPhrase).join('. ');
-            const comboSpoken = repeatedSpoken;
 
-            return { comboDisplay, comboSpoken, totalComboTime };
-        }
-        
-        function callCombo() {
-            // Only call combo during RUNNING state
-            if (state.state !== 'RUNNING') return;
-
-            const { comboDisplay, comboSpoken, totalComboTime } = generateCombo();
-
-            // Update display
-            comboCallout.innerHTML = `<span class="combo-text">${comboDisplay}</span>`;
-            
-            // Speak the combo
-            speak(comboSpoken);
-
-            // Set the time remaining for the combo sequence
-            state.timeToNextCombo = totalComboTime;
-        }
-
-        // --- Main Timer Logic ---
-
-        function startTimer() {
-            // Start audio context on first user interaction
-            if (!audioContextStarted) {
-                Tone.start();
-                audioContextStarted = true;
-                updateVoiceVolume(); // Apply volume after context is started
+            // 2. Determine combo length
+            let minLen = 1, maxLen;
+            if (comboLengthSetting === 0) { // Low
+                maxLen = 2;
+            } else if (comboLengthSetting === 1) { // Medium
+                maxLen = 4;
+            } else { // High
+                minLen = 3; 
+                maxLen = 6;
             }
-            
-            if (state.state === 'STOPPED' || state.state === 'FINISHED') {
-                resetTimer();
-                speak(`Starting first round in 10 seconds.`);
-                startPrep();
-            } else if (state.state === 'PAUSED') {
-                speak(`Resume!`);
-                resumeTimer();
-            }
-        }
+            const comboLength = Math.floor(Math.random() * (maxLen - minLen + 1)) + minLen;
 
-        function pauseTimer() {
-            clearInterval(state.timerInterval);
-            state.state = 'PAUSED';
-            updateUI();
-            speak("Pause!");
-        }
+            let combo = [];
+            let lastMoveKey = null;
 
-        function resumeTimer() {
-            // Restore previous state (which could be RUNNING, REST, or PREP)
-            state.state = state.previousState || 'RUNNING'; 
-            state.timerInterval = setInterval(updateTimer, 1000);
-            updateUI();
-        }
+            for (let i = 0; i < comboLength; i++) {
+                let nextMoveKey;
+                let potentialMoves = [...validMoveKeys]; // Start with all valid moves
 
-        function stopTimer() {
-            clearInterval(state.timerInterval);
-            resetTimer();
-            updateUI();
-            speak("Workout stopped!");
-        }
-        
-        function skipToNextRound() {
-            if (state.state === 'RUNNING' || state.state === 'REST') {
-                logRoundEnd();
-            }
-            if (state.currentRound < config.numRounds) {
-                startRest();
-            } else {
-                finishWorkout();
-            }
-        }
-
-        function updateTimer() {
-            // Decrement total workout time
-            state.totalWorkoutTime++;
-            
-            // Decrement current round time
-            state.currentRoundTime--;
-
-            // Update total remaining time display
-            updateTotalTimeDisplay();
-
-            if (state.state === 'PREP') {
-                // ... Prep logic
-                if (state.currentRoundTime > 0) {
-                    timerDisplay.textContent = formatTime(state.currentRoundTime);
-                    timerDisplay.style.color = 'var(--warn-color)';
-                    if (state.currentRoundTime <= 3) {
-                        playBeep(440, '8n');
-                        speak(state.currentRoundTime);
-                    }
-                } else {
-                    startRound();
-                }
-            } else if (state.state === 'RUNNING') {
-                
-                // --- NEW: Dynamic Combo Call Logic ---
-                state.timeToNextCombo--; // Countdown the time for the current combo
-                
-                // Call a new combo if the current combo time is finished (and not at the very end of the round)
-                if (state.timeToNextCombo <= 0 && state.currentRoundTime > 0) {
-                    callCombo();
-                }
-                // End of NEW logic
-
-                if (state.currentRoundTime > 0) {
-                    timerDisplay.textContent = formatTime(state.currentRoundTime);
-                    timerDisplay.style.color = 'var(--work-color)';
+                // Apply Difficulty Restriction (Consecutive Same-Side)
+                if (comboDifficultySetting < 2 && lastMoveKey && MOVES[lastMoveKey].group === 'Punch') {
+                    const lastSide = MOVES[lastMoveKey].side;
                     
-                    // 10 second warning
-                    if (state.currentRoundTime === 10) {
-                        playBeep(600, '4n');
-                        speak("10 seconds!");
+                    // Filter out punches from the same side
+                    potentialMoves = potentialMoves.filter(key => {
+                        const move = MOVES[key];
+                        // If difficulty is Low (0), strictly alternate L/R punches.
+                        // If difficulty is Medium (1), allow same-side but with reduced weight.
+                        if (move.group === 'Punch' && move.side === lastSide) {
+                            return comboDifficultySetting === 1; // Only allow if Medium difficulty
+                        }
+                        return true;
+                    });
+                }
+                
+                // Apply Complexity Restriction (Frequency of Non-Punches)
+                if (moveComplexitySetting < 2) {
+                    const nonPunchKeys = validMoveKeys.filter(k => MOVES[k].group !== 'Punch');
+                    // If complexity is Low (0), only allow non-punches if the generated move is a punch
+                    if (moveComplexitySetting === 0 && nonPunchKeys.includes(generateRandomMove(validMoveKeys))) {
+                        potentialMoves = validMoveKeys.filter(k => MOVES[k].group === 'Punch');
                     }
-                } else {
-                    logRoundEnd();
-                    if (state.currentRound < config.numRounds) {
-                        startRest();
-                    } else {
-                        finishWorkout();
+                    // If complexity is Medium (1), reduce the probability of non-punches
+                    if (moveComplexitySetting === 1 && nonPunchKeys.includes(generateRandomMove(validMoveKeys)) && Math.random() > 0.6) {
+                        potentialMoves = validMoveKeys.filter(k => MOVES[k].group === 'Punch');
                     }
                 }
-            } else if (state.state === 'REST') {
-                // ... Rest logic
-                if (state.currentRoundTime > 0) {
-                    timerDisplay.textContent = formatTime(state.currentRoundTime);
-                    timerDisplay.style.color = 'var(--rest-color)';
 
-                    // 10 second warning
-                    if (state.currentRoundTime === 10) {
-                        playBeep(600, '4n');
-                        speak("10 seconds!");
-                    }
-                } else {
-                    startRound();
+                // If potentialMoves is empty after filtering, fall back to simple punches
+                if (potentialMoves.length === 0) {
+                    potentialMoves = Object.keys(MOVES).filter(k => MOVES[k].group === 'Punch');
                 }
+                
+                nextMoveKey = generateRandomMove(potentialMoves);
+                combo.push(nextMoveKey);
+                lastMoveKey = nextMoveKey;
             }
 
-            updateUI();
-        }
-
-        function startPrep() {
-            // Pre-Round 1 countdown
-            state.state = 'PREP';
-            state.currentRound = 1;
-            state.currentRoundTime = 10; // 10 second prep time
-            clearInterval(state.timerInterval);
-            state.timerInterval = setInterval(updateTimer, 1000);
-            updateUI();
+            return combo.join('-');
         }
         
-        function startRound() {
-            state.state = 'RUNNING';
-            state.currentRoundTime = config.roundDuration;
+        /** The main interval function that calls out the next combo. */
+        function comboLoop() {
+            if (state.isWorkPhase) {
+                // Generate and display the new combo
+                const comboString = generateCombo();
+                
+                // Convert punch numbers to their full text descriptions for TTS
+                const ttsText = comboString.split('-').map(key => MOVES[key].text).join(', ');
+
+                DOMElements.comboCallout.innerHTML = `<span class="text-3xl sm:text-4xl font-extrabold text-amber-500">${comboString.split('-').join(' ')}</span>`;
+                
+                // Announce the combo using native TTS
+                speakText(ttsText);
+            }
+        }
+
+        /** Plays the bell sound and speaks the announcement. */
+        function playBell(isStart) {
+            // Stop any ongoing speech
+            window.speechSynthesis.cancel();
             
-            // Announce new round
-            if (state.currentRound > 1) {
-                playBeep(880, '4n');
-                speak(`Round ${state.currentRound}!`);
+            // Tone.js must be started by user interaction, so start it here
+            Tone.start(); 
+            
+            const now = Tone.now();
+            
+            if (isStart) {
+                // Triple chime (Work/Round Start)
+                synth.triggerAttackRelease("C5", "8n", now);
+                synth.triggerAttackRelease("E5", "8n", now + 0.2);
+                synth.triggerAttackRelease("G5", "8n", now + 0.4);
             } else {
-                 // For the first round, announcement was in PREP, but play the bell
-                playBeep(880, '4n');
+                // Single low chime (Rest/End)
+                synth.triggerAttackRelease("C4", "1n", now, 0.5); 
             }
-            
-            // Call the first combo immediately
-            callCombo();
-
-            updateUI();
         }
 
-        function startRest() {
-            state.state = 'REST';
-            state.currentRoundTime = config.restDuration;
-            
-            // Announce rest and increment round counter for next round
-            if (config.restDuration > 0) {
-                playBeep(440, '4n');
-                speak("Rest!");
+        /** The main timer loop (runs every second). */
+        function timerLoop() {
+            state.timeRemaining--;
+
+            if (state.timeRemaining <= 0) {
+                // Clear the current interval
+                clearInterval(state.timerInterval);
+                clearInterval(state.comboInterval);
+
+                if (state.isWorkPhase) {
+                    // END OF WORK PHASE
+                    DOMElements.comboCallout.innerHTML = `<span class="text-3xl text-green-400">REST!</span>`;
+                    playBell(false); // Single low chime
+                    speakText("Rest!");
+                    
+                    state.currentRound++;
+
+                    if (state.currentRound > config.numRounds) {
+                        // END OF WORKOUT
+                        handleStop(true); 
+                        return;
+                    }
+
+                    // Start Rest Phase
+                    state.isWorkPhase = false;
+                    state.timeRemaining = config.restDuration;
+
+                } else {
+                    // END OF REST PHASE - Start New Round
+                    DOMElements.comboCallout.innerHTML = `<span class="text-3xl text-amber-400">Round ${state.currentRound}</span>`;
+                    playBell(true); // Triple chime
+                    speakText(`Round ${state.currentRound}`);
+
+                    // Start Work Phase
+                    state.isWorkPhase = true;
+                    state.timeRemaining = config.roundDuration;
+                    
+                    // Restart Combo Generation
+                    state.comboInterval = setInterval(comboLoop, state.comboDurationMs);
+                    comboLoop(); // Call immediately to show first combo
+                }
+
+                // Restart the timer loop
+                state.timerInterval = setInterval(timerLoop, 1000);
+            } else if (state.timeRemaining <= 10 && state.timeRemaining > 0) {
+                // Warning beeps in the last 10 seconds
+                if (state.timeRemaining <= 5 && state.isWorkPhase) {
+                    speakText(state.timeRemaining.toString());
+                } else if (!state.isWorkPhase && state.timeRemaining <= 3) {
+                     speakText(state.timeRemaining.toString());
+                }
+                synth.triggerAttackRelease("C3", "32n"); 
             }
-            state.currentRound++; // Prepare for the next round
             
-            // Skip the rest period if duration is 0
-            if (config.restDuration === 0) {
-                startRound();
-            }
-            
-            updateUI();
+            updateDisplay();
         }
+
+        // --- Event Handlers & Control Logic ---
         
-        function finishWorkout() {
-            clearInterval(state.timerInterval);
-            state.state = 'FINISHED';
-            playBeep(880, '2n'); // Long double-beep
-            speak("Workout finished! Good job!");
-            timerDisplay.textContent = "00:00";
-            comboCallout.textContent = "WORKOUT COMPLETE!";
-            comboCallout.classList.add('text-green-500');
-            comboCallout.classList.remove('text-amber-500');
-            launchConfetti();
-            updateUI();
+        /** Toggles between Start and Pause states. */
+        function handleStartPause() {
+            if (!state.isRunning) {
+                // STARTING
+                state.isRunning = true;
+                state.isPaused = false;
+                DOMElements.configCard.classList.add('hidden');
+                DOMElements.stopBtn.classList.remove('hidden');
+
+                // Initial setup for Round 1
+                state.currentRound = 1;
+                state.isWorkPhase = true;
+                state.timeRemaining = config.roundDuration;
+
+                // Start the bells and initial callout
+                playBell(true);
+                speakText(`Round 1. Fight!`);
+                DOMElements.comboCallout.innerHTML = `<span class="text-3xl text-amber-400">Round 1</span>`;
+
+                // Start loops
+                state.timerInterval = setInterval(timerLoop, 1000);
+                state.comboInterval = setInterval(comboLoop, state.comboDurationMs);
+                comboLoop(); // Show first combo immediately
+
+                // Update UI
+                DOMElements.startPauseIcon.innerHTML = `<i data-lucide="pause" class="w-8 h-8"></i>`;
+                DOMElements.startPauseLabel.textContent = "Pause Training";
+
+            } else if (state.isPaused) {
+                // RESUMING
+                state.isPaused = false;
+                DOMElements.configCard.classList.add('hidden');
+
+                // Resume loops
+                state.timerInterval = setInterval(timerLoop, 1000);
+                if (state.isWorkPhase) {
+                    state.comboInterval = setInterval(comboLoop, state.comboDurationMs);
+                }
+                speakText("Fight!"); // Announce resumption
+
+                // Update UI
+                DOMElements.startPauseIcon.innerHTML = `<i data-lucide="pause" class="w-8 h-8"></i>`;
+                DOMElements.startPauseLabel.textContent = "Pause Training";
+            } else {
+                // PAUSING
+                state.isPaused = true;
+                DOMElements.configCard.classList.remove('hidden');
+                
+                // Clear intervals
+                clearInterval(state.timerInterval);
+                clearInterval(state.comboInterval);
+                window.speechSynthesis.cancel(); // Stop TTS
+                
+                speakText("Training Paused."); // Announce pause
+
+                // Update UI
+                DOMElements.startPauseIcon.innerHTML = `<i data-lucide="play" class="w-8 h-8"></i>`;
+                DOMElements.startPauseLabel.textContent = "Resume Training";
+                DOMElements.comboCallout.innerHTML = `<span class="text-slate-400 text-3xl">PAUSED</span>`;
+            }
+            updateDisplay();
         }
 
-        function resetTimer() {
+        /** Stops the workout and resets state. */
+        function handleStop(finished = false) {
             clearInterval(state.timerInterval);
-            state.state = 'STOPPED';
+            clearInterval(state.comboInterval);
+            window.speechSynthesis.cancel();
+            
+            // Reset state
+            state.isRunning = false;
+            state.isPaused = false;
             state.currentRound = 0;
-            state.currentRoundTime = config.roundDuration; // Reset to configured value for display
-            state.timeToNextCombo = 0;
-            state.totalWorkoutTime = 0;
+            state.timeRemaining = config.roundDuration;
+            state.isWorkPhase = true;
+            state.lastSide = null;
+
+            DOMElements.stopBtn.classList.add('hidden');
+            DOMElements.configCard.classList.remove('hidden');
+            DOMElements.startPauseIcon.innerHTML = `<i data-lucide="play" class="w-8 h-8"></i>`;
+            DOMElements.startPauseLabel.textContent = "Start Training";
             
-            historyLog.innerHTML = '<p>No rounds completed yet.</p>';
-            comboCallout.innerHTML = '<span class="text-slate-400 text-base">Press Start to begin training!</span>';
-            comboCallout.classList.remove('text-green-500');
-            comboCallout.classList.add('text-amber-500');
-            
-            updateConfig(); // Recalculate total time display and reset combo text
-            updateTotalTimeDisplay();
-            timerDisplay.textContent = formatTime(config.roundDuration);
-            timerDisplay.style.color = 'var(--text-color)';
-            
-            // Clear confetti
-            document.getElementById('confetti-container').innerHTML = '';
+            if (finished) {
+                DOMElements.comboCallout.innerHTML = `<span class="text-green-400 text-3xl">WORKOUT COMPLETE!</span>`;
+                speakText("Workout Complete! Great job!");
+                triggerConfetti();
+            } else {
+                DOMElements.comboCallout.innerHTML = `<span class="text-slate-400 text-base">Press Start to begin training!</span>`;
+            }
+
+            updateDisplay();
+            lucide.createIcons(); // Re-render icons after state change
+        }
+
+        /** Confirms the stop action from the modal. */
+        function confirmStop() {
+            hideModal('confirmation-modal');
+            handleStop(false);
+        }
+
+        /** Toggles the mute state. */
+        function toggleMute() {
+            state.isMuted = !state.isMuted;
+            DOMElements.muteIcon.setAttribute('data-lucide', state.isMuted ? 'volume-x' : 'volume-2');
+            if (state.isMuted) {
+                window.speechSynthesis.cancel();
+            }
+            lucide.createIcons();
+        }
+
+        /** Updates the native voice volume display. */
+        function updateVoiceVolume() {
+            const volume = DOMElements.volumeSlider.value / 100;
+            // Convert linear volume (0-1) to decibels (0 is silence, 1 is max)
+            const db = volume === 0 ? '-Inf' : (20 * Math.log10(volume)).toFixed(1);
+            DOMElements.volumeDb.textContent = `${db} dB`;
+
+            // If a native voice is speaking, update its volume
+            const voices = window.speechSynthesis.getVoices();
+            if (window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+                // If a voice was speaking, restart it with the new volume
+                // Note: Direct volume adjustment during speech is not supported in all browsers.
+            }
         }
         
-        function logRoundEnd() {
-            const roundMinutes = Math.floor(config.roundDuration / 60);
-            const roundSeconds = config.roundDuration % 60;
-            const durationText = roundSeconds > 0 ? `${roundMinutes}m ${roundSeconds}s` : `${roundMinutes}m`;
-            
-            if (state.currentRound === 1) {
-                historyLog.innerHTML = '';
-            }
-            
-            const p = document.createElement('p');
-            p.textContent = `Round ${state.currentRound} complete. (${durationText})`;
-            p.classList.add('border-b', 'border-slate-700', 'pb-1');
-            historyLog.appendChild(p);
-            historyLog.scrollTop = historyLog.scrollHeight; // Scroll to bottom
-        }
-
-        function updateUI() {
-            // Button visibility
-            startBtn.style.display = (state.state === 'STOPPED' || state.state === 'FINISHED' || state.state === 'PAUSED') ? '' : 'none';
-            pauseBtn.style.display = (state.state === 'RUNNING' || state.state === 'REST' || state.state === 'PREP') ? '' : 'none';
-            stopBtn.disabled = (state.state === 'STOPPED' || state.state === 'FINISHED');
-            skipBtn.disabled = (state.state === 'STOPPED' || state.state === 'FINISHED');
-
-            // Config card visibility (only configurable when stopped/finished)
-            if (state.state === 'RUNNING' || state.state === 'REST' || state.state === 'PREP') {
-                configCard.classList.add('pointer-events-none', 'opacity-50');
-            } else {
-                configCard.classList.remove('pointer-events-none', 'opacity-50');
-            }
-            
-            // Combo text status
-            if (state.state === 'REST' || state.state === 'PREP') {
-                comboCallout.textContent = state.state === 'REST' ? 'REST' : 'PREP';
-                comboCallout.classList.remove('text-amber-500');
-                comboCallout.classList.add('text-green-500');
-            } else if (state.state === 'RUNNING') {
-                comboCallout.classList.add('text-amber-500');
-                comboCallout.classList.remove('text-green-500');
-            }
-        }
-
-        // --- Fullscreen & Utility UI ---
-
+        /** Toggles fullscreen mode for a more immersive experience. */
         function toggleFullscreen() {
-            const icon = document.getElementById('fullscreen-icon');
             if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen();
-                icon.setAttribute('data-lucide', 'minimize');
+                document.documentElement.requestFullscreen().then(() => {
+                    DOMElements.fullscreenIcon.setAttribute('data-lucide', 'minimize');
+                }).catch(err => {
+                    console.error(`Error attempting to enable fullscreen: ${err.message}`);
+                });
             } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                    icon.setAttribute('data-lucide', 'maximize');
-                }
+                document.exitFullscreen().then(() => {
+                    DOMElements.fullscreenIcon.setAttribute('data-lucide', 'maximize');
+                });
             }
-            // Re-render lucide icon on change
             lucide.createIcons();
         }
-        
-        function toggleConfig() {
-            const icon = document.getElementById('config-toggle-icon');
-            const buttonText = configCard.querySelector('#toggle-config-btn span');
 
-            if (configCard.classList.contains('opacity-100')) {
-                configCard.classList.add('opacity-0', 'max-h-0', 'overflow-hidden');
-                configCard.classList.remove('opacity-100', 'max-h-[60vh]', 'overflow-y-auto');
-                icon.setAttribute('data-lucide', 'chevron-down');
-                buttonText.textContent = 'Show Settings';
-            } else {
-                configCard.classList.remove('opacity-0', 'max-h-0', 'overflow-hidden');
-                configCard.classList.add('opacity-100', 'max-h-[60vh]', 'overflow-y-auto');
-                icon.setAttribute('data-lucide', 'chevron-up');
-                buttonText.textContent = 'Hide Settings';
-            }
-            // Re-render lucide icon on change
-            lucide.createIcons();
-        }
-        
-        // --- Confetti Effect (for finish) ---
-        
-        function launchConfetti() {
+        /** Creates and launches a confetti effect. */
+        function triggerConfetti() {
             const container = document.getElementById('confetti-container');
-            container.innerHTML = '';
-            const colors = ['#f59e0b', '#fff', '#10b981']; // Amber, White, Green
-
+            const colors = ['#f59e0b', '#fcd34d', '#10b981', '#3b82f6']; 
+            
             for (let i = 0; i < 50; i++) {
                 const piece = document.createElement('div');
-                piece.classList.add('confetti-piece');
-                piece.style.left = `${Math.random() * 100}vw`;
+                piece.className = 'confetti-piece';
                 piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                
-                // Random size and rotation
-                const size = `${Math.random() * 10 + 5}px`;
-                piece.style.width = size;
-                piece.style.height = size;
-                piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px'; // Square or Circle
-                
-                // Random animation delay and duration for a scattered look
+                piece.style.left = `${Math.random() * 100}vw`;
+                piece.style.top = `${Math.random() * -10}vh`; // Start above the viewport
                 piece.style.animationDelay = `${Math.random() * 0.5}s`;
-                piece.style.animationDuration = `${Math.random() * 1.5 + 2}s`;
-                
+                piece.style.width = piece.style.height = `${Math.random() * 12 + 5}px`;
+
+                // Add a unique animation to each piece
+                piece.style.animation = `pop ${3 + Math.random() * 2}s ease-out forwards`;
+                piece.style.transform = `translateY(${Math.random() * 100}vh) rotate(${Math.random() * 1000}deg)`;
+
                 container.appendChild(piece);
+                
+                // Remove piece after animation ends to prevent memory leak
+                piece.addEventListener('animationend', () => piece.remove());
             }
         }
 
+        /** Displays a modal. */
+        function showModal(id = 'confirmation-modal') {
+            document.getElementById(id).classList.remove('hidden');
+            document.getElementById(id).classList.add('flex');
+        }
+
+        /** Hides a modal. */
+        function hideModal(id) {
+            document.getElementById(id).classList.remove('flex');
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        /** Displays the Combo Preview Modal with generated data. */
+        function showPreviewModal() {
+            const previewContent = document.getElementById('preview-content');
+            const previewMetadata = document.getElementById('preview-metadata');
+            previewContent.innerHTML = ''; // Clear previous content
+
+            // Generate 10 sample combos
+            let sampleCombos = [];
+            for(let i = 0; i < 10; i++) {
+                sampleCombos.push(generateCombo());
+            }
+
+            // Populate metadata
+            previewMetadata.innerHTML = `
+                <p><strong>Round Duration:</strong> ${document.getElementById('round-duration').value} mins | 
+                <strong>Rest Duration:</strong> ${document.getElementById('rest-duration').value} mins | 
+                <strong>Total Rounds:</strong> ${document.getElementById('num-rounds').value}</p>
+                <p><strong>Pace:</strong> ${document.getElementById('combo-intensity').value} (${state.comboDurationMs / 1000}s/combo) | 
+                <strong>Variety:</strong> ${document.getElementById('punch-complexity').value} & ${document.getElementById('moves-included').value}</p>
+                <p class="mt-2 text-amber-400"><strong>TTS Voice:</strong> ${selectedVoice ? selectedVoice.name : 'Not Ready'}</p>
+            `;
+
+            // Populate combos
+            sampleCombos.forEach((combo, index) => {
+                const comboElement = document.createElement('div');
+                comboElement.className = 'p-3 bg-slate-700 rounded-lg flex justify-between items-center shadow-md';
+                comboElement.innerHTML = `
+                    <span class="text-slate-400 font-mono w-8">${index + 1}.</span>
+                    <span class="text-white text-xl font-extrabold flex-grow text-center">${combo.split('-').join(' ')}</span>
+                    <button onclick="speakText('${combo.split('-').map(key => MOVES[key].text).join(', ')}')" 
+                            class="text-amber-400 hover:text-amber-300 transition active:scale-95 p-1 rounded-full">
+                        <i data-lucide="volume-2" class="w-5 h-5"></i>
+                    </button>
+                `;
+                previewContent.appendChild(comboElement);
+            });
+            
+            showModal('combo-preview-modal');
+            lucide.createIcons(); // Ensure volume icons are rendered
+        }
 
         // --- Initialization ---
-        
-        window.onload = () => {
-            // Load voices, then set initial config
-            speechSynthesis.onvoiceschanged = populateVoiceList;
-
-            // Call initial config update to set default values and UI labels
-            updateConfig();
-            
+        window.onload = function() {
+            // Initialize config and display
+            updateConfig(); 
+            // Initialize TTS, detect OS, and select best voice
+            initializeTTS();
             // Update volume display on load
             updateVoiceVolume();
 
