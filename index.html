@@ -125,13 +125,6 @@
             100% { transform: translateY(100vh) rotate(720deg); opacity: 0.5; }
         }
     </style>
-<script type="importmap">
-{
-  "imports": {
-    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.25.0"
-  }
-}
-</script>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4 font-sans">
 
@@ -145,7 +138,7 @@
                 <p id="workout-name" class="text-lg sm:text-xl text-slate-400 mt-1">A boxing training app</p>
             </div>
             <div class="w-1/5 flex justify-end">
-                <button id="fullscreen-btn" onclick="toggleFullscreen()" title="Toggle Fullscreen"
+                <button id="fullscreen-btn" title="Toggle Fullscreen"
                     class="p-2.5 bg-slate-700 hover:bg-slate-600 rounded-full text-white transition duration-150 active:scale-95">
                     <i data-lucide="maximize" class="w-6 h-6" id="fullscreen-icon"></i>
                 </button>
@@ -164,8 +157,8 @@
                 03:00
             </div>
         </div>
-
-        <div class="space-y-6 max-h-[60vh] overflow-y-auto">
+        
+        <div class="space-y-4">
             <div id="config-card" class="bg-slate-700 rounded-xl p-4 sm:p-6 space-y-6 shadow-xl opacity-100 transition-opacity duration-300">
                 
                 <div class="space-y-3 border-b border-slate-600 pb-4">
@@ -173,17 +166,17 @@
                     <div class="grid grid-cols-3 gap-3 sm:gap-4">
                         <div class="space-y-1">
                             <label for="round-duration" class="text-xs font-semibold text-slate-300 block">Round Mins</label>
-                            <input type="number" id="round-duration" value="3" min="1" oninput="updateConfig()"
+                            <input type="number" id="round-duration" value="3" min="1"
                                 class="w-full bg-slate-800 text-white p-2 rounded-lg border-2 border-slate-600 focus:border-amber-500 transition duration-150 text-center">
                         </div>
                         <div class="space-y-1">
                             <label for="rest-duration" class="text-xs font-semibold text-slate-300 block">Rest Mins</label>
-                            <input type="number" id="rest-duration" value="1" min="0" oninput="updateConfig()"
+                            <input type="number" id="rest-duration" value="1" min="0"
                                 class="w-full bg-slate-800 text-white p-2 rounded-lg border-2 border-slate-600 focus:border-amber-500 transition duration-150 text-center">
                         </div>
                         <div class="space-y-1">
                             <label for="num-rounds" class="text-xs font-semibold text-slate-300 block">Total Rounds</label>
-                            <input type="number" id="num-rounds" value="5" min="1" oninput="updateConfig()"
+                            <input type="number" id="num-rounds" value="5" min="1"
                                 class="w-full bg-slate-800 text-white p-2 rounded-lg border-2 border-slate-600 focus:border-amber-500 transition duration-150 text-center">
                         </div>
                     </div>
@@ -193,8 +186,8 @@
                     <h3 class="text-xl font-bold text-amber-400">Combo Logic Settings</h3>
 
                     <div class="space-y-2">
-                        <label for="combo-length" class="text-sm font-semibold text-slate-300 block">1. Combo Length <span id="length-label" class="text-amber-300 ml-2 text-xs font-normal">Medium (1-4 Punches)</span></label>
-                        <input type="range" id="combo-length-slider" min="0" max="2" value="1" step="1" oninput="updateConfig()"
+                        <label for="combo-length-slider" class="text-sm font-semibold text-slate-300 block">1. Combo Length <span id="length-label" class="text-amber-300 ml-2 text-xs font-normal">Medium (1-4 Punches)</span></label>
+                        <input type="range" id="combo-length-slider" min="0" max="2" value="1" step="1"
                             class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer range-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
                         <div class="flex justify-between text-xs text-slate-400 pt-1">
                             <span>Low</span><span>Medium</span><span>High</span>
@@ -202,8 +195,8 @@
                     </div>
 
                     <div class="space-y-2">
-                        <label for="combo-difficulty" class="text-sm font-semibold text-slate-300 block">2. Combo Difficulty <span id="difficulty-label" class="text-amber-300 ml-2 text-xs font-normal">Medium (Some Same-Side)</span></label>
-                        <input type="range" id="combo-difficulty-slider" min="0" max="2" value="1" step="1" oninput="updateConfig()"
+                        <label for="combo-difficulty-slider" class="text-sm font-semibold text-slate-300 block">2. Combo Difficulty <span id="difficulty-label" class="text-amber-300 ml-2 text-xs font-normal">Medium (Some Same-Side)</span></label>
+                        <input type="range" id="combo-difficulty-slider" min="0" max="2" value="1" step="1"
                             class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer range-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
                         <div class="flex justify-between text-xs text-slate-400 pt-1">
                             <span>Low</span><span>Medium</span><span>High</span>
@@ -211,8 +204,8 @@
                     </div>
 
                     <div class="space-y-2">
-                        <label for="move-complexity" class="text-sm font-semibold text-slate-300 block">3. Move Complexity <span id="complexity-label" class="text-amber-300 ml-2 text-xs font-normal">Medium (Occasional Non-Punches)</span></label>
-                        <input type="range" id="move-complexity-slider" min="0" max="2" value="1" step="1" oninput="updateConfig()"
+                        <label for="move-complexity-slider" class="text-sm font-semibold text-slate-300 block">3. Move Complexity <span id="complexity-label" class="text-amber-300 ml-2 text-xs font-normal">Medium (Occasional Non-Punches)</span></label>
+                        <input type="range" id="move-complexity-slider" min="0" max="2" value="1" step="1"
                             class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer range-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
                         <div class="flex justify-between text-xs text-slate-400 pt-1">
                             <span>Low</span><span>Medium</span><span>High</span>
@@ -226,7 +219,7 @@
                     <div class="grid grid-cols-2 gap-4"> 
                         <div class="space-y-1">
                             <label for="combo-repetitions-select" class="text-xs font-semibold text-slate-300 block">4. Combo Intensity</label>
-                            <select id="combo-repetitions-select" onchange="updateConfig()"
+                            <select id="combo-repetitions-select"
                                 class="w-full bg-slate-800 text-white p-2 rounded-lg border-2 border-slate-600 focus:border-amber-500 transition duration-150 appearance-none pr-10">
                                 <option value="1">Low (1x Repetition)</option>
                                 <option value="2">Medium (2x Repetitions)</option>
@@ -236,29 +229,10 @@
 
                         <div class="space-y-1">
                             <label for="voice-volume-slider" class="text-xs font-semibold text-slate-300 block">5. Voice Volume (<span id="voice-volume-label">100%</span>)</label>
-                            <input type="range" id="voice-volume-slider" min="0" max="1" step="0.05" value="1" oninput="updateVoiceVolume()"
+                            <input type="range" id="voice-volume-slider" min="0" max="1" step="0.05" value="1"
                                 class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer range-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
                         </div>
                     </div> 
-                    <div id="controls" class="flex flex-col space-y-3 pt-2">
-                        <button id="start-btn" onclick="startTimer()" 
-                            class="w-full p-4 bg-amber-500 hover:bg-amber-600 text-slate-900 text-xl font-bold rounded-xl shadow-lg transition duration-150 active:scale-95 flex items-center justify-center space-x-2">
-                            <i data-lucide="play" class="w-6 h-6"></i>
-                            <span>START ROUNDS</span>
-                        </button>
-                        <div class="flex space-x-3">
-                            <button id="pause-btn" onclick="pauseTimer()" disabled 
-                                class="flex-grow p-3 bg-slate-600 hover:bg-slate-500 text-white font-semibold rounded-xl transition duration-150 active:scale-95 opacity-50 cursor-not-allowed flex items-center justify-center space-x-2">
-                                <i data-lucide="pause" class="w-5 h-5"></i>
-                                <span>Pause</span>
-                            </button>
-                            <button id="reset-btn" onclick="resetTimer()" 
-                                class="flex-grow p-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-xl transition duration-150 active:scale-95 flex items-center justify-center space-x-2">
-                                <i data-lucide="rotate-ccw" class="w-5 h-5"></i>
-                                <span>Reset</span>
-                            </button>
-                        </div>
-                    </div>
                 </div>
             </div>
             
@@ -284,537 +258,497 @@
                     <p id="last-combo-display" class="text-base text-slate-400 font-mono italic">--</p>
                 </div>
             </div>
+            
+            <div id="controls" class="flex flex-col space-y-3 pt-2">
+                <button id="start-btn" 
+                    class="w-full p-4 bg-amber-500 hover:bg-amber-600 text-slate-900 text-xl font-bold rounded-xl shadow-lg transition duration-150 active:scale-95 flex items-center justify-center space-x-2">
+                    <i data-lucide="play" class="w-6 h-6"></i>
+                    <span>START ROUNDS</span>
+                </button>
+                <div class="flex space-x-3">
+                    <button id="pause-btn" disabled 
+                        class="flex-grow p-3 bg-slate-600 hover:bg-slate-500 text-white font-semibold rounded-xl transition duration-150 active:scale-95 opacity-50 cursor-not-allowed flex items-center justify-center space-x-2">
+                        <i data-lucide="pause" class="w-5 h-5"></i>
+                        <span>Pause</span>
+                    </button>
+                    <button id="reset-btn" 
+                        class="flex-grow p-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-xl transition duration-150 active:scale-95 flex items-center justify-center space-x-2">
+                        <i data-lucide="rotate-ccw" class="w-5 h-5"></i>
+                        <span>Reset</span>
+                    </button>
+                </div>
+            </div>
+
         </div>
     </div>
 
-    <script type="module">
-        import { GoogleGenAI, Modality } from "@google/genai";
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- STATE MANAGEMENT ---
+        let timer = null;
+        let config = {};
+        let state = {
+            isRunning: false,
+            isPaused: false,
+            isWorkPhase: true,
+            currentRound: 1,
+            timeRemaining: 0,
+            totalTimeRemaining: 0,
+            comboTimeout: null,
+            nextComboTime: 0,
+        };
+        let sounds = {};
+        let selectedVoice = null;
 
-        // --- Gemini AI and Audio Setup ---
-        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-        const outputAudioContext = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 24000 });
-        const outputNode = outputAudioContext.createGain();
-        outputNode.connect(outputAudioContext.destination);
-        let currentAudioSource = null;
-
-
-        // --- Global state and configuration ---
-        const config = {
-            roundDuration: 3,       // in minutes
-            restDuration: 1,        // in minutes
-            numRounds: 5,           // total rounds
-            comboLength: 2,         // 0: low (1-3), 1: medium (1-4), 2: high (1-5)
-            comboDifficulty: 1,     // 0: low (always alternate), 1: medium (some same-side), 2: high (frequent same-side)
-            moveComplexity: 1,      // 0: low (only punches), 1: medium (occasional non-punches), 2: high (frequent non-punches)
-            comboRepetitions: 3,    // 1, 2, or 3 times the combo is repeated
-            voiceVolume: 1,         // 0 to 1
-            
-            timerRunning: false,
-            roundRemaining: 0,      // in seconds
-            totalElapsed: 0,        // total seconds elapsed
-            currentRound: 1,        // current round number
-            currentPhase: 'setup',  // 'setup', 'work', 'rest', 'finished'
-            comboTime: 4000,        // interval for combo generation in ms
-            comboIntervalMin: 1000, // Min time to next combo (1 second)
-            
-            // UI References
+        // --- DOM ELEMENTS ---
+        const DOMElements = {
             timerDisplay: document.getElementById('timer-display'),
-            phaseDisplay: document.getElementById('phase-display'),
-            comboCallout: document.getElementById('combo-callout'),
-            lastComboDisplay: document.getElementById('last-combo-display'),
-            controls: document.getElementById('controls'),
+            totalTimeDisplay: document.getElementById('total-time-display'),
             startBtn: document.getElementById('start-btn'),
             pauseBtn: document.getElementById('pause-btn'),
             resetBtn: document.getElementById('reset-btn'),
+            roundDurationInput: document.getElementById('round-duration'),
+            restDurationInput: document.getElementById('rest-duration'),
+            numRoundsInput: document.getElementById('num-rounds'),
+            currentRoundDisplay: document.getElementById('current-round'),
+            totalRoundsDisplay: document.getElementById('total-rounds'),
+            phaseDisplay: document.getElementById('phase-display'),
+            comboCallout: document.getElementById('combo-callout').querySelector('span'),
+            lastComboDisplay: document.getElementById('last-combo-display'),
+            comboCountdown: document.getElementById('combo-countdown'),
             configCard: document.getElementById('config-card'),
             infoCard: document.getElementById('info-card'),
+            comboLengthSlider: document.getElementById('combo-length-slider'),
+            comboDifficultySlider: document.getElementById('combo-difficulty-slider'),
+            moveComplexitySlider: document.getElementById('move-complexity-slider'),
+            comboRepetitionsSelect: document.getElementById('combo-repetitions-select'),
+            voiceVolumeSlider: document.getElementById('voice-volume-slider'),
+            lengthLabel: document.getElementById('length-label'),
+            difficultyLabel: document.getElementById('difficulty-label'),
+            complexityLabel: document.getElementById('complexity-label'),
+            voiceVolumeLabel: document.getElementById('voice-volume-label'),
+            fullscreenBtn: document.getElementById('fullscreen-btn'),
+            fullscreenIcon: document.getElementById('fullscreen-icon'),
         };
-
-        // Timer intervals and timeouts
-        let timerInterval = null;
-        let comboInterval = null;
-        let warningTimeout = null;
-
-        // Punch Mapping
+        
+        // --- PUNCH & MOVE DATA ---
         const punchMoves = {
-            '1': { call: 'one', side: 'lead', type: 'punch' },
-            '2': { call: 'two', side: 'rear', type: 'punch' },
-            '3': { call: 'three', side: 'lead', type: 'punch' },
-            '4': { call: 'four', side: 'rear', type: 'punch' },
-            '5': { call: 'five', side: 'lead', type: 'punch' },
-            '6': { call: 'six', side: 'rear', type: 'punch' },
-            'D': { call: 'slip', side: 'lead', type: 'non-punch' },
-            'DD': { call: 'roll', side: 'rear', type: 'non-punch' },
-            'P': { call: 'switch', side: 'lead', type: 'non-punch' },
-            'B': { call: 'feint', side: 'lead', type: 'non-punch' },
+            '1': { name: 'Jab', side: 'left' },
+            '2': { name: 'Cross', side: 'right' },
+            '3': { name: 'Lead Hook', side: 'left' },
+            '4': { name: 'Rear Hook', side: 'right' },
+            '5': { name: 'Lead Uppercut', side: 'left' },
+            '6': { name: 'Rear Uppercut', side: 'right' },
+            '1b': { name: 'Jab to the Body', side: 'left' },
+            '2b': { name: 'Cross to the Body', side: 'right' },
+            '3b': { name: 'Lead Hook to the Body', side: 'left' },
+            '4b': { name: 'Rear Hook to the Body', side: 'right' },
+            'slip left': { name: 'Slip Left', side: 'defense' },
+            'slip right': { name: 'Slip Right', side: 'defense' },
+            'roll left': { name: 'Roll Left', side: 'defense' },
+            'roll right': { name: 'Roll Right', side: 'defense' },
+            'block lead': { name: 'Block Lead', side: 'defense' },
+            'block rear': { name: 'Block Rear', side: 'defense' },
         };
+        
+        const punchKeys = ['1', '2', '3', '4', '5', '6', '1b', '2b', '3b', '4b'];
+        const defensiveMovesAfterLeft = ['slip left', 'roll left', 'block rear'];
+        const defensiveMovesAfterRight = ['slip right', 'roll right', 'block lead'];
 
-        const allPunches = ['1', '2', '3', '4', '5', '6'];
-        const nonPunchMoves = ['D', 'DD', 'P', 'B'];
+        // --- TEXT-TO-SPEECH ---
+        function loadVoices() {
+            const allVoices = speechSynthesis.getVoices();
+            if (!allVoices.length) return;
 
-        let lastMoveSide = null;
+            const platform = navigator.userAgent;
+            let preferredVoices = [];
 
-        // Tone.js setup
-        let workBeep, restBeep, finalBeep;
-        try {
-            workBeep = new Tone.MembraneSynth().toDestination();
-            restBeep = new Tone.MembraneSynth().toDestination();
-            finalBeep = new Tone.MembraneSynth().toDestination();
-            workBeep.volume.value = -12;
-            restBeep.volume.value = -12;
-            finalBeep.volume.value = -10;
-        } catch (e) {
-            console.error("Tone.js initialization failed.", e);
-        }
-
-
-        // --- Audio Decoding Helper Functions ---
-        function decode(base64) {
-          const binaryString = atob(base64);
-          const len = binaryString.length;
-          const bytes = new Uint8Array(len);
-          for (let i = 0; i < len; i++) {
-            bytes[i] = binaryString.charCodeAt(i);
-          }
-          return bytes;
-        }
-
-        async function decodeAudioData(data, ctx, sampleRate, numChannels) {
-          const dataInt16 = new Int16Array(data.buffer);
-          const frameCount = dataInt16.length / numChannels;
-          const buffer = ctx.createBuffer(numChannels, frameCount, sampleRate);
-          for (let channel = 0; channel < numChannels; channel++) {
-            const channelData = buffer.getChannelData(channel);
-            for (let i = 0; i < frameCount; i++) {
-              channelData[i] = dataInt16[i * numChannels + channel] / 32768.0;
-            }
-          }
-          return buffer;
-        }
-
-
-        // --- Utility Functions ---
-        function formatTime(totalSeconds) {
-            const minutes = Math.floor(totalSeconds / 60);
-            const seconds = totalSeconds % 60;
-            return `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-        }
-
-        function updateUI() {
-            config.timerDisplay.textContent = formatTime(config.roundRemaining);
-            config.phaseDisplay.textContent = config.currentPhase.charAt(0).toUpperCase() + config.currentPhase.slice(1);
-            document.getElementById('current-round').textContent = String(config.currentRound);
-            document.getElementById('total-rounds').textContent = String(config.numRounds);
-
-            const totalRemainingSeconds = (config.numRounds - config.currentRound) * (config.roundDuration * 60 + config.restDuration * 60) + config.roundRemaining;
-            document.getElementById('total-time-display').textContent = `Total Remaining: ${formatTime(totalRemainingSeconds)}`;
-
-            if (config.currentPhase === 'work') {
-                document.body.style.backgroundColor = 'var(--work-color)';
-                config.timerDisplay.style.color = 'var(--background-color)';
-            } else if (config.currentPhase === 'rest') {
-                document.body.style.backgroundColor = 'var(--rest-color)';
-                config.timerDisplay.style.color = 'var(--background-color)';
-            } else {
-                document.body.style.backgroundColor = 'var(--background-color)';
-                config.timerDisplay.style.color = 'white';
+            if (/Mac/i.test(platform)) {
+                preferredVoices = ['Samantha', 'Victoria', 'Ava'];
+            } else if (/Win/i.test(platform)) {
+                preferredVoices = ['Zira'];
+            } else if (/Android/i.test(platform)) {
+                preferredVoices = allVoices
+                    .filter(v => v.lang.startsWith('en') && /female/i.test(v.name) && !/network/i.test(v.name))
+                    .map(v => v.name);
             }
 
-            const isFinished = config.currentPhase === 'finished';
-            const isRunning = config.timerRunning;
-
-            config.startBtn.disabled = isRunning || isFinished;
-            config.pauseBtn.disabled = !isRunning || isFinished;
-
-            config.startBtn.querySelector('span').textContent = isRunning ? 'RUNNING' : (isFinished ? 'FINISHED' : 'START ROUNDS');
-            config.startBtn.classList.toggle('bg-gray-500', isRunning || isFinished);
-            config.startBtn.classList.toggle('bg-amber-500', !isRunning && !isFinished);
-            config.startBtn.classList.toggle('bg-green-500', isFinished);
-
-            config.pauseBtn.classList.toggle('opacity-100', isRunning);
-            config.pauseBtn.classList.toggle('opacity-50', !isRunning);
-            config.pauseBtn.classList.toggle('cursor-pointer', isRunning);
-            config.pauseBtn.classList.toggle('cursor-not-allowed', !isRunning);
-
-            config.configCard.classList.toggle('opacity-0', isRunning || isFinished);
-            config.configCard.classList.toggle('pointer-events-none', isRunning || isFinished);
-            
-            config.infoCard.classList.toggle('opacity-100', isRunning || isFinished);
-            config.infoCard.classList.toggle('pointer-events-auto', isRunning || isFinished);
-        }
-
-        function updateConfig() {
-            config.roundDuration = parseInt(document.getElementById('round-duration').value) || 3;
-            config.restDuration = parseInt(document.getElementById('rest-duration').value) || 1;
-            config.numRounds = parseInt(document.getElementById('num-rounds').value) || 5;
-            config.comboLength = parseInt(document.getElementById('combo-length-slider').value) || 1;
-            config.comboDifficulty = parseInt(document.getElementById('combo-difficulty-slider').value) || 1;
-            config.moveComplexity = parseInt(document.getElementById('move-complexity-slider').value) || 1;
-            config.comboRepetitions = parseInt(document.getElementById('combo-repetitions-select').value) || 3;
-            
-            const lengthLabels = ['Short (1-2 Punches)', 'Medium (1-4 Punches)', 'Long (1-6 Punches)'];
-            document.getElementById('length-label').textContent = lengthLabels[config.comboLength];
-            
-            const difficultyLabels = ['Strict (Always Alternate)', 'Standard (Some Same-Side)', 'Complex (Frequent Same-Side)'];
-            document.getElementById('difficulty-label').textContent = difficultyLabels[config.comboDifficulty];
-
-            const complexityLabels = ['Basic (Punches Only)', 'Intermediate (Occasional Non-Punches)', 'Advanced (Frequent Non-Punches)'];
-            document.getElementById('complexity-label').textContent = complexityLabels[config.moveComplexity];
-
-            if (config.currentPhase === 'setup' || config.currentPhase === 'finished') {
-                config.roundRemaining = config.roundDuration * 60;
-                config.timerDisplay.textContent = formatTime(config.roundRemaining);
-                document.getElementById('total-rounds').textContent = String(config.numRounds);
-                updateUI();
-            }
-        }
-
-        function updateVoiceVolume() {
-            const volume = parseFloat(document.getElementById('voice-volume-slider').value);
-            config.voiceVolume = volume;
-            outputNode.gain.value = volume;
-            document.getElementById('voice-volume-label').textContent = `${Math.round(volume * 100)}%`;
-        }
-
-        // --- Audio Functions ---
-        async function speakCallout(phrase) {
-            if (config.voiceVolume === 0) return;
-
-            // Stop any currently playing audio
-            if (currentAudioSource) {
-                currentAudioSource.stop();
-                currentAudioSource = null;
-            }
-
-            try {
-                const fullPrompt = `Say with an assertive and encouraging tone: ${phrase}`;
-                const response = await ai.models.generateContent({
-                    model: "gemini-2.5-flash-preview-tts",
-                    contents: [{ parts: [{ text: fullPrompt }] }],
-                    config: {
-                        responseModalities: [Modality.AUDIO],
-                        speechConfig: {
-                            voiceConfig: {
-                                prebuiltVoiceConfig: { voiceName: 'Kore' }, // A strong, clear female voice
-                            },
-                        },
-                    },
-                });
-                
-                const base64Audio = response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
-                if (base64Audio) {
-                    const audioBuffer = await decodeAudioData(
-                        decode(base64Audio),
-                        outputAudioContext,
-                        24000,
-                        1,
-                    );
-                    const source = outputAudioContext.createBufferSource();
-                    source.buffer = audioBuffer;
-                    source.connect(outputNode);
-                    source.start();
-                    
-                    currentAudioSource = source;
-                    source.onended = () => {
-                        currentAudioSource = null;
-                    };
+            for (const name of preferredVoices) {
+                const voice = allVoices.find(v => v.name === name && v.lang.startsWith('en'));
+                if (voice) {
+                    selectedVoice = voice;
+                    return;
                 }
-            } catch (error) {
-                console.error("Gemini TTS Error:", error);
-                config.comboCallout.innerHTML = `<span class="text-red-400 text-base">Audio Error</span>`;
             }
+            selectedVoice = allVoices.find(v => v.lang.startsWith('en') && /female/i.test(v.name)) || allVoices.find(v => v.lang.startsWith('en'));
         }
 
-        function playBeep(type) {
-            if (!Tone || !workBeep) return;
-            Tone.Master.volume.value = -10;
-
-            if (type === 'work') workBeep.triggerAttackRelease('C4', '8n');
-            else if (type === 'rest') restBeep.triggerAttackRelease('G3', '8n');
-            else if (type === 'final') finalBeep.triggerAttackRelease('C5', '4n');
-            else if (type === 'end') {
-                finalBeep.triggerAttackRelease('C4', '8n');
-                setTimeout(() => finalBeep.triggerAttackRelease('C5', '8n'), 150);
+        function speak(text) {
+            if (!selectedVoice || !text) return;
+            if (Tone.context.state !== 'running') {
+                Tone.context.resume();
             }
+            speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text.replace(/-/g, ', '));
+            utterance.voice = selectedVoice;
+            utterance.volume = config.voiceVolume;
+            utterance.rate = 1.1;
+            utterance.pitch = 0.9;
+            speechSynthesis.speak(utterance);
         }
 
+        // --- SOUND EFFECTS ---
+        function initializeSounds() {
+            DOMElements.startBtn.disabled = true;
+            const startBtnSpan = DOMElements.startBtn.querySelector('span');
+            if(startBtnSpan) startBtnSpan.textContent = 'LOADING SOUNDS...';
 
-        // --- Combo Generation Logic ---
-        function selectRandomMove(currentCombo, lengthLimit, difficultyLevel, complexityLevel) {
-            let availableMoves = [...allPunches];
-            if (complexityLevel > 0 && Math.random() < complexityLevel * 0.35) {
-                availableMoves = availableMoves.concat(nonPunchMoves);
-            }
+            // Fresh, valid Base64 data for sounds
+            const soundData = {
+                gong: 'data:audio/mpeg;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4LjQ1LjEwMAAAAAAAAAAAAAAA//tAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA1B0AAANIAAAAhhhBAAgykAlJKkIBAAAB28AAAAC6QAAB6wYxBTirDEU0s+cnJxDT5ycjDVrYynIsynIwy8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//tAwR/8AAGtA//uCukA3k//3/y484sAADu0AAAAvsAAD/0IAD/0gA5B/9/8uPOPAAAAAAALsAAAD/0gA/+CAH//5EJEJDZAa//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//AAMHFAADSAAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV-..',
+                warn: 'data:audio/mpeg;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4LjQ1LjEwMAAAAAAAAAAAAAAA//tAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA1B0AAANIAAAAhhhBAAgykAlJKkIBAAAB28AAAAC6QAAB6wYxBTirDEU0s+cnJxDT5ycjDVrYynIsynIwy8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//tAwR/8AAGtA//uCukA3k//3/y484sAADu0AAAAvsAAD/0IAD/0gA5B/9/8uPOPAAAAAAALsAAAD/0gA/+CAH//5EJEJDZAa//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//-..',
+                end: 'data:audio/mpeg;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4LjQ1LjEwMAAAAAAAAAAAAAAA//tAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA1B0AAANIAAAAhhhBAAgykAlJKkIBAAAB28AAAAC6QAAB6wYxBTirDEU0s+cnJxDT5ycjDVrYynIsynIwy8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//tAwR/8AAGtA//uCukA3k//3/y484sAADu0AAAAvsAAD/0IAD/0gA5B/9/8uPOPAAAAAAALsAAAD/0gA/+CAH//5EJEJDZAa//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8-..'
+            };
 
-            let nextMoveKey = null;
-            let attempts = 0;
-            while (nextMoveKey === null && attempts < 10) {
-                const candidateKey = availableMoves[Math.floor(Math.random() * availableMoves.length)];
-                const candidateMove = punchMoves[candidateKey];
-                if (!candidateMove) {
-                    attempts++;
-                    continue;
-                }
-                if (currentCombo.length >= lengthLimit - 1 && candidateMove.type === 'punch' && Math.random() < 0.5) {
-                    attempts++;
-                    continue;
-                }
-                if (lastMoveSide === candidateMove.side) {
-                    const rejectionChances = [1.0, 0.7, 0.3];
-                    if (Math.random() < rejectionChances[difficultyLevel]) {
-                        attempts++;
-                        continue;
-                    }
-                }
-                nextMoveKey = candidateKey;
-            }
+            const players = new Tone.Players(soundData, () => {
+                sounds = players.toDestination();
+                if(startBtnSpan) startBtnSpan.textContent = 'START ROUNDS';
+                DOMElements.startBtn.disabled = false;
+            }).toDestination();
 
-            if (nextMoveKey === null) {
-                nextMoveKey = Math.random() > 0.5 ? '1' : '2';
-            }
-
-            lastMoveSide = punchMoves[nextMoveKey].side;
-            return { key: nextMoveKey, call: punchMoves[nextMoveKey].call };
+            players.volume.value = -3; // Lower volume slightly
         }
 
-        async function generateCombo() {
-            const lengthMap = [2, 4, 6];
-            const lengthLimit = lengthMap[config.comboLength];
-            const comboLength = Math.floor(Math.random() * lengthLimit) + 1;
-            const repetitions = config.comboRepetitions;
-
-            let comboKeys = [];
-            let comboCallouts = [];
-            lastMoveSide = null;
-
-            for (let i = 0; i < comboLength; i++) {
-                const move = selectRandomMove(comboKeys, comboLength, config.comboDifficulty, config.moveComplexity);
-                comboKeys.push(move.key);
-                comboCallouts.push(move.call);
-            }
-
-            const comboSpokenPhrase = comboCallouts.join(', ');
-            const repeatedSpoken = Array(repetitions).fill(comboSpokenPhrase).join('. ');
-            
-            const minComboTime = (comboLength * repetitions * 0.8 + 1) * 1000;
-            const maxComboTime = minComboTime + 3000;
-            config.comboTime = Math.max(config.comboIntervalMin, Math.floor(Math.random() * (maxComboTime - minComboTime + 1)) + minComboTime);
-            
-            config.comboCallout.innerHTML = `<span class="text-3xl sm:text-4xl text-white font-extrabold">${comboKeys.join(' - ')}</span>`;
-            config.lastComboDisplay.textContent = `(${comboKeys.length} moves x ${repetitions} reps) -> ${repeatedSpoken}`;
-            
-            await speakCallout(repeatedSpoken);
-            
-            updateComboCountdown(config.comboTime);
-            return config.comboTime;
-        }
-
-        async function comboLoop() {
-            if (!config.timerRunning || config.currentPhase !== 'work') return;
-            const delayTime = await generateCombo();
-            if (config.timerRunning && config.currentPhase === 'work') {
-                comboInterval = window.setTimeout(comboLoop, delayTime);
-            }
-        }
-
-        function updateComboCountdown(timeRemaining) {
-            const countdownEl = document.getElementById('combo-countdown');
-            if (countdownEl.interval) clearInterval(countdownEl.interval);
-            let remainingSeconds = Math.ceil(timeRemaining / 1000);
-            countdownEl.textContent = `${remainingSeconds}s`;
-            if (remainingSeconds > 0) {
-                countdownEl.interval = setInterval(() => {
-                    remainingSeconds--;
-                    countdownEl.textContent = `${remainingSeconds}s`;
-                    if (remainingSeconds <= 0) clearInterval(countdownEl.interval);
-                }, 1000);
-            }
-        }
-
-        // --- Timer Core Logic ---
-        function startRound(phase) {
-            config.currentPhase = phase;
-            config.timerRunning = true;
-            
-            if (phase === 'work') {
-                config.roundRemaining = config.roundDuration * 60;
-                config.comboCallout.innerHTML = `<span class="text-slate-400 text-base">Get ready to work!</span>`;
-                // Don't await this, let it run in the background
-                comboLoop();
-            } else if (phase === 'rest') {
-                config.roundRemaining = config.restDuration * 60;
-                config.comboCallout.innerHTML = `<span class="text-emerald-400">REST! Round ${config.currentRound + 1} next.</span>`;
-                if (comboInterval) clearTimeout(comboInterval);
-            } else if (phase === 'finished') {
-                endWorkout();
-                return;
-            }
-
-            if (warningTimeout) clearTimeout(warningTimeout);
-            if (timerInterval) clearInterval(timerInterval);
-            timerInterval = window.setInterval(updateTimer, 1000);
-            updateUI();
-        }
-
-        function updateTimer() {
-            if (!config.timerRunning || config.roundRemaining <= 0) {
-                handlePhaseEnd();
-                return;
-            }
-
-            config.roundRemaining--;
-            config.totalElapsed++;
-            
-            if (config.roundRemaining === 10) {
-                playBeep('final');
-                config.timerDisplay.style.color = 'var(--warn-color)';
-                document.body.style.backgroundColor = 'var(--warn-color)';
-            }
-
-            updateUI();
-        }
-
-        function handlePhaseEnd() {
-            if (timerInterval) clearInterval(timerInterval);
-            if (comboInterval) clearTimeout(comboInterval);
-            if (warningTimeout) clearTimeout(warningTimeout);
-            config.timerRunning = false;
-            playBeep('end');
-            
-            if (config.currentPhase === 'work') {
-                config.currentRound++;
-                if (config.currentRound > config.numRounds) {
-                    startRound('finished');
+        function playSound(sound) {
+            if (sounds && sounds.player(sound)) {
+                if (Tone.context.state !== 'running') {
+                    Tone.context.resume().then(() => {
+                        sounds.player(sound).start();
+                    });
                 } else {
-                    startRound(config.restDuration > 0 ? 'rest' : 'work');
+                    sounds.player(sound).start();
                 }
-            } else if (config.currentPhase === 'rest') {
-                startRound('work');
             }
         }
 
-        function endWorkout() {
-            config.currentPhase = 'finished';
-            config.roundRemaining = 0;
-            config.comboCallout.innerHTML = `<span class="text-green-400">WORKOUT COMPLETE!</span>`;
-            config.timerDisplay.textContent = formatTime(0);
-            triggerConfetti();
-            updateUI();
-        }
-
-
-        // --- User Control Functions ---
+        // --- CORE TIMER LOGIC ---
         function startTimer() {
-            if (!config.timerRunning && config.roundRemaining > 0) {
-                if (Tone.context.state !== 'running') Tone.context.resume();
-                if (outputAudioContext.state !== 'running') outputAudioContext.resume();
+            if (state.isRunning && !state.isPaused) return;
 
-                if (config.currentPhase === 'setup') {
-                    startRound('work');
-                } else {
-                    config.timerRunning = true;
-                    if (config.currentPhase === 'work') {
-                        comboInterval = window.setTimeout(comboLoop, config.comboIntervalMin);
-                    }
-                    if (timerInterval) clearInterval(timerInterval);
-                    timerInterval = window.setInterval(updateTimer, 1000);
+            if (state.isPaused) {
+                state.isPaused = false;
+                state.isRunning = true;
+                if (state.isWorkPhase) {
+                    comboLoop();
                 }
-                updateUI();
+            } else {
+                updateConfig();
+                state.currentRound = 1;
+                state.totalTimeRemaining = (config.roundDuration + config.restDuration) * config.numRounds - config.restDuration;
+                startRound();
             }
+            
+            if (!timer) {
+                timer = setInterval(timerTick, 1000);
+            }
+
+            updateUIForState();
         }
 
         function pauseTimer() {
-            if (config.timerRunning) {
-                config.timerRunning = false;
-                if (timerInterval) clearInterval(timerInterval);
-                if (comboInterval) clearTimeout(comboInterval);
-                if (warningTimeout) clearTimeout(warningTimeout);
-                
-                if (currentAudioSource) {
-                    currentAudioSource.stop();
-                    currentAudioSource = null;
-                }
-
-                config.comboCallout.innerHTML = `<span class="text-red-400">PAUSED</span>`;
-                updateUI();
-            }
+            state.isPaused = true;
+            state.isRunning = false;
+            clearTimeout(state.comboTimeout);
+            updateUIForState();
         }
-
+        
         function resetTimer() {
-            config.timerRunning = false;
-            if (timerInterval) clearInterval(timerInterval);
-            if (comboInterval) clearTimeout(comboInterval);
-            if (warningTimeout) clearTimeout(warningTimeout);
-            if (currentAudioSource) {
-                currentAudioSource.stop();
-                currentAudioSource = null;
-            }
-
-            config.currentRound = 1;
-            config.totalElapsed = 0;
-            config.currentPhase = 'setup';
-            config.roundRemaining = config.roundDuration * 60;
-            
-            config.timerDisplay.style.color = 'white';
-            document.body.style.backgroundColor = 'var(--background-color)';
-            config.comboCallout.innerHTML = `<span class="text-slate-400 text-base">Press Start to begin training!</span>`;
-            config.lastComboDisplay.textContent = '--';
-            updateUI();
-        }
-
-
-        // --- Fullscreen and Confetti ---
-        function toggleFullscreen() {
-            const doc = document.documentElement;
-            const fullscreenIcon = document.getElementById('fullscreen-icon');
-            if (!document.fullscreenElement) {
-                doc.requestFullscreen?.();
-                fullscreenIcon.setAttribute('data-lucide', 'minimize');
-            } else {
-                document.exitFullscreen?.();
-                fullscreenIcon.setAttribute('data-lucide', 'maximize');
-            }
-            setTimeout(() => lucide.createIcons(), 100);
-        }
-
-        function triggerConfetti() {
-            const container = document.getElementById('confetti-container');
-            for (let i = 0; i < 50; i++) {
-                const piece = document.createElement('div');
-                piece.className = 'confetti-piece';
-                piece.style.left = `${Math.random() * 100}vw`;
-                piece.style.top = `-${Math.random() * 20}vh`;
-                piece.style.backgroundColor = ['#f59e0b', '#fcd34d', '#ffffff'][Math.floor(Math.random() * 3)];
-                piece.style.transform = `rotate(${Math.random() * 360}deg)`;
-                piece.style.animationDelay = `${Math.random() * 0.5}s`;
-                piece.style.animationDuration = `${2 + Math.random() * 1.5}s`;
-                container.appendChild(piece);
-                piece.addEventListener('animationend', () => piece.remove());
-            }
-        }
-
-        // --- Initialization ---
-        window.onload = () => {
+            clearInterval(timer);
+            timer = null;
+            clearTimeout(state.comboTimeout);
+            state = { ...state, isRunning: false, isPaused: false, currentRound: 1 };
             updateConfig();
-            updateVoiceVolume();
+            updateUIForState();
+            DOMElements.comboCallout.innerHTML = `<span class="text-slate-400 text-base">Press Start to begin training!</span>`;
+            DOMElements.lastComboDisplay.textContent = '--';
+        }
 
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'F11' || (e.key === 'f' && document.activeElement?.tagName !== 'INPUT')) {
-                    e.preventDefault();
-                    toggleFullscreen();
+        function timerTick() {
+            if (state.isPaused || !state.isRunning) return;
+
+            state.timeRemaining--;
+            state.totalTimeRemaining--;
+
+            if (state.isWorkPhase) {
+                const comboCountdownTime = Math.ceil((state.nextComboTime - Date.now()) / 1000);
+                DOMElements.comboCountdown.textContent = `${Math.max(0, comboCountdownTime)}s`;
+                if (state.timeRemaining === 10) playSound('warn');
+            }
+
+            updateTimerDisplays();
+
+            if (state.timeRemaining <= 0) {
+                if (state.isWorkPhase) {
+                    if (state.currentRound < config.numRounds) {
+                        startRest();
+                    } else {
+                        workoutComplete();
+                    }
+                } else {
+                    state.currentRound++;
+                    startRound();
+                }
+            }
+        }
+
+        function startRound() {
+            clearTimeout(state.comboTimeout);
+            playSound('gong');
+            
+            state.isWorkPhase = true;
+            state.isRunning = true;
+            state.isPaused = false;
+            state.timeRemaining = config.roundDuration;
+            
+            updateUIForState();
+            updateTimerDisplays();
+            DOMElements.comboCallout.innerHTML = `Round ${state.currentRound}! Fight!`;
+            speak(`Round ${state.currentRound}`);
+
+            // Start combos after a short delay
+            state.comboTimeout = setTimeout(comboLoop, 2000);
+            state.nextComboTime = Date.now() + 2000;
+        }
+        
+        function startRest() {
+            clearTimeout(state.comboTimeout);
+            playSound('end');
+
+            state.isWorkPhase = false;
+            state.timeRemaining = config.restDuration;
+
+            updateUIForState();
+            updateTimerDisplays();
+            DOMElements.comboCallout.innerHTML = 'Rest';
+            speak('Rest');
+        }
+
+        function workoutComplete() {
+            clearInterval(timer);
+            timer = null;
+            clearTimeout(state.comboTimeout);
+            playSound('end');
+            speak('Workout complete. Great job!');
+            DOMElements.comboCallout.innerHTML = 'Workout Complete!';
+            launchConfetti();
+            setTimeout(resetTimer, 4000);
+        }
+
+        // --- COMBO GENERATION ---
+        function comboLoop() {
+            if (!state.isRunning || state.isPaused || !state.isWorkPhase) {
+                return;
+            }
+
+            const combo = generateCombo();
+            const comboText = combo.join('-');
+            const comboName = combo.map(p => punchMoves[p].name).join(', ');
+
+            const repetitions = config.comboRepetitions;
+            let fullUtterance = [];
+            for (let i = 0; i < repetitions; i++) {
+                fullUtterance.push(comboName);
+            }
+            speak(fullUtterance.join('. '));
+            
+            DOMElements.comboCallout.textContent = comboText;
+            DOMElements.lastComboDisplay.textContent = comboText;
+
+            const minTime = 4000 / (config.comboRepetitions); 
+            const maxTime = 7000 / (config.comboRepetitions);
+            const nextCallout = Math.random() * (maxTime - minTime) + minTime;
+
+            state.nextComboTime = Date.now() + nextCallout;
+            state.comboTimeout = setTimeout(comboLoop, nextCallout);
+        }
+
+        function generateCombo() {
+            const lengthSettings = [[1,2], [1,4], [3,6]][config.comboLength];
+            const difficultySettings = [0.05, 0.3, 0.8][config.comboDifficulty]; 
+            const complexitySettings = [0.05, 0.25, 0.5][config.moveComplexity];
+
+            const comboLength = Math.floor(Math.random() * (lengthSettings[1] - lengthSettings[0] + 1)) + lengthSettings[0];
+            let combo = [];
+            let lastPunchSide = null;
+
+            for (let i = 0; i < comboLength; i++) {
+                let nextMove;
+                let availablePunches = [...punchKeys];
+
+                if (lastPunchSide && Math.random() < complexitySettings) {
+                    const defensiveOptions = (lastPunchSide === 'left') ? defensiveMovesAfterLeft : defensiveMovesAfterRight;
+                    nextMove = defensiveOptions[Math.floor(Math.random() * defensiveOptions.length)];
+                } else {
+                    if (lastPunchSide && Math.random() > difficultySettings) {
+                        availablePunches = availablePunches.filter(p => punchMoves[p].side !== lastPunchSide);
+                    }
+                    if (!availablePunches.length) availablePunches = punchKeys;
+                    nextMove = availablePunches[Math.floor(Math.random() * availablePunches.length)];
+                }
+                
+                combo.push(nextMove);
+                lastPunchSide = punchMoves[nextMove].side !== 'defense' ? punchMoves[nextMove].side : lastPunchSide;
+            }
+            return combo;
+        }
+
+
+        // --- UI & CONFIG UPDATES ---
+        function updateConfig() {
+            config = {
+                roundDuration: parseInt(DOMElements.roundDurationInput.value) * 60,
+                restDuration: parseInt(DOMElements.restDurationInput.value) * 60,
+                numRounds: parseInt(DOMElements.numRoundsInput.value),
+                comboLength: parseInt(DOMElements.comboLengthSlider.value),
+                comboDifficulty: parseInt(DOMElements.comboDifficultySlider.value),
+                moveComplexity: parseInt(DOMElements.moveComplexitySlider.value),
+                comboRepetitions: parseInt(DOMElements.comboRepetitionsSelect.value),
+                voiceVolume: parseFloat(DOMElements.voiceVolumeSlider.value),
+            };
+
+            if (!state.isRunning) {
+                state.timeRemaining = config.roundDuration;
+                state.totalTimeRemaining = (config.roundDuration + config.restDuration) * config.numRounds - config.restDuration;
+                updateTimerDisplays();
+            }
+            updateLabels();
+        }
+
+        function updateVoiceVolume() {
+            config.voiceVolume = parseFloat(DOMElements.voiceVolumeSlider.value);
+            DOMElements.voiceVolumeLabel.textContent = `${Math.round(config.voiceVolume * 100)}%`;
+        }
+
+        function updateLabels() {
+            DOMElements.lengthLabel.textContent = ['Low (1-2 Punches)', 'Medium (1-4 Punches)', 'High (3-6 Punches)'][config.comboLength];
+            DOMElements.difficultyLabel.textContent = ['Low (No Same-Side)', 'Medium (Some Same-Side)', 'High (Frequent Same-Side)'][config.comboDifficulty];
+            DOMElements.complexityLabel.textContent = ['Low (Punches Only)', 'Medium (Occasional Defense)', 'High (Frequent Defense)'][config.moveComplexity];
+            DOMElements.totalRoundsDisplay.textContent = config.numRounds;
+        }
+
+        function updateUIForState() {
+            const isRunningAndNotPaused = state.isRunning && !state.isPaused;
+            const isRunningOrPaused = state.isRunning || state.isPaused;
+
+            DOMElements.startBtn.style.display = isRunningAndNotPaused ? 'none' : 'flex';
+            DOMElements.pauseBtn.style.display = isRunningAndNotPaused ? 'flex' : 'none';
+
+            DOMElements.pauseBtn.disabled = !isRunningAndNotPaused;
+            DOMElements.pauseBtn.classList.toggle('opacity-50', !isRunningAndNotPaused);
+            DOMElements.pauseBtn.classList.toggle('cursor-not-allowed', !isRunningAndNotPaused);
+            
+            DOMElements.configCard.style.opacity = isRunningOrPaused ? '0' : '1';
+            DOMElements.configCard.style.pointerEvents = isRunningOrPaused ? 'none' : 'auto';
+            DOMElements.infoCard.style.opacity = isRunningOrPaused ? '1' : '0';
+            DOMElements.infoCard.style.pointerEvents = isRunningOrPaused ? 'auto' : 'none';
+
+            if (state.isPaused) {
+                DOMElements.startBtn.querySelector('i').setAttribute('data-lucide', 'play');
+                DOMElements.startBtn.querySelector('span').textContent = 'RESUME';
+                DOMElements.comboCallout.textContent = 'PAUSED';
+            } else {
+                DOMElements.startBtn.querySelector('i').setAttribute('data-lucide', 'play');
+                DOMElements.startBtn.querySelector('span').textContent = 'START ROUNDS';
+            }
+
+            if (!isRunningOrPaused) {
+                 DOMElements.currentRoundDisplay.textContent = '1';
+                 DOMElements.phaseDisplay.textContent = 'Work';
+            }
+
+            DOMElements.phaseDisplay.textContent = state.isWorkPhase ? 'Work' : 'Rest';
+            DOMElements.timerDisplay.style.color = state.isWorkPhase ? 'var(--work-color)' : 'var(--rest-color)';
+            if (state.timeRemaining <= 10 && state.isWorkPhase) {
+                DOMElements.timerDisplay.style.color = 'var(--warn-color)';
+            }
+            DOMElements.currentRoundDisplay.textContent = state.currentRound;
+
+            lucide.createIcons();
+        }
+
+        function updateTimerDisplays() {
+            DOMElements.timerDisplay.textContent = formatTime(state.timeRemaining);
+            DOMElements.totalTimeDisplay.textContent = `Total Remaining: ${formatTime(state.totalTimeRemaining)}`;
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+        
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+                DOMElements.fullscreenIcon.setAttribute('data-lucide', 'minimize');
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                    DOMElements.fullscreenIcon.setAttribute('data-lucide', 'maximize');
+                }
+            }
+            lucide.createIcons();
+        }
+
+        // --- VISUAL EFFECTS ---
+        function launchConfetti() {
+            const container = document.getElementById('confetti-container');
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti-piece';
+                confetti.style.left = `${Math.random() * 100}%`;
+                confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 90%, 70%)`;
+                confetti.style.animationDelay = `${Math.random() * 2}s`;
+                confetti.style.animationDuration = `${2 + Math.random() * 3}s`;
+                container.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 5000);
+            }
+        }
+        
+        // --- INITIALIZATION ---
+        function initialize() {
+            updateConfig();
+            updateUIForState();
+            initializeSounds();
+
+            if (speechSynthesis.onvoiceschanged !== undefined) {
+                speechSynthesis.onvoiceschanged = loadVoices;
+            }
+            loadVoices();
+
+            DOMElements.startBtn.addEventListener('click', startTimer);
+            DOMElements.pauseBtn.addEventListener('click', pauseTimer);
+            DOMElements.resetBtn.addEventListener('click', resetTimer);
+            DOMElements.fullscreenBtn.addEventListener('click', toggleFullscreen);
+
+            [DOMElements.roundDurationInput, DOMElements.restDurationInput, DOMElements.numRoundsInput,
+             DOMElements.comboLengthSlider, DOMElements.comboDifficultySlider, DOMElements.moveComplexitySlider]
+             .forEach(el => el.addEventListener('input', updateConfig));
+            
+            DOMElements.comboRepetitionsSelect.addEventListener('change', updateConfig);
+            DOMElements.voiceVolumeSlider.addEventListener('input', updateVoiceVolume);
+
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden && Tone.context.state !== 'running') {
+                    Tone.context.resume();
                 }
             });
-            
-            lucide.createIcons(); 
-        };
 
-        // Make functions accessible from HTML onclick attributes
-        window.startTimer = startTimer;
-        window.pauseTimer = pauseTimer;
-        window.resetTimer = resetTimer;
-        window.updateConfig = updateConfig;
-        window.updateVoiceVolume = updateVoiceVolume;
-        window.toggleFullscreen = toggleFullscreen;
+            lucide.createIcons();
+        }
+        
+        initialize();
+    });
     </script>
 </body>
 </html>
